@@ -27,7 +27,7 @@ public class PrimitiveServlet implements Servlet {
     System.out.println("from service.");
     PrintWriter out = servletResponse.getWriter();
     out.println("Hello. Roses are red.");
-    out.println("Violets are blue.");
+    out.print("Violets are blue.");
   }
 
   public String getServletInfo() {
