@@ -49,8 +49,10 @@ public class HttpServer1 {
         response.setRequest(request);
 
         if (request.getUri().startsWith("/servlet/")) {
-          ServletProcessor1 processor1 = new ServletProcessor1();
-          processor1.process(request, response);
+//          ServletProcessor1 processor1 = new ServletProcessor1();
+//          processor1.process(request, response);
+          ServletProcessor2 processor2 = new ServletProcessor2();
+          processor2.process(request, response);
         } else {
           StaticResourceProcessor processor = new StaticResourceProcessor();
           processor.process(request, response);
