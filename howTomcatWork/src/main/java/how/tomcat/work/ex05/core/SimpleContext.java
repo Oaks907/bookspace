@@ -37,6 +37,7 @@ import java.util.HashMap;
 
 /**
  * Create by haifei on 19/7/2018.
+ * 上下文，对应一个web应用程序，包含的各种内容，同时可以作为一个Container(context)
  */
 public class SimpleContext implements Context, Pipeline {
 

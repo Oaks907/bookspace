@@ -13,8 +13,9 @@ import java.net.URLStreamHandler;
 
 /**
  * Create by haifei on 17/7/2018.
+ * 构建类加载器，在Tomcat中指明了要由那个文件中加载Servlet
  */
-public class SimpleLoader implements Loader{
+public class SimpleLoader implements Loader {
 
   public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "webroot";
 

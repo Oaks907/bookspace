@@ -13,6 +13,7 @@ import java.io.IOException;
 
 /**
  * Create by haifei on 17/7/2018.
+ * Pipeline，针对每一个请求而言
  */
 public class SimplePipeline implements Pipeline {
 
@@ -75,9 +76,10 @@ public class SimplePipeline implements Pipeline {
       stage = stage + 1;
 
       if (subscript < valves.length) {
+        //每个请求都会先调用这个，方法内部会直接调用下一个，直到调用basic
         valves[subscript].invoke(request, response, this);
       } else if ((subscript == valves.length) && (basic != null)) {
-        System.out.println("basic invoke");
+        //调用设置的Basic处理，这里目的是调用对应的Servlet服务
         basic.invoke(request, response, this);
       } else {
         throw new ServletException("No valve");

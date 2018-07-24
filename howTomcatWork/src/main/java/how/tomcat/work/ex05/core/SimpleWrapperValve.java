@@ -17,6 +17,7 @@ import java.io.IOException;
 
 /**
  * Create by haifei on 17/7/2018.
+ * 作为Basic Wrapper，独立的servlet在Pipeline中首先完成
  */
 public class SimpleWrapperValve implements Valve, Contained{
 

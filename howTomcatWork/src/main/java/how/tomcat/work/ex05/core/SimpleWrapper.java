@@ -30,11 +30,12 @@ public class SimpleWrapper implements Pipeline, Wrapper {
   private Servlet instance = null;
   private String servletClass;
   private String name;
-  private SimplePipeline pipeline = new SimplePipeline(this);
-  private Loader loader;
+  private SimplePipeline pipeline = new SimplePipeline(this);  //调用的Pipeline
+  private Loader loader;  //加载器，用于加载请求所访问的Servlet
   protected Container parent = null;
 
   public SimpleWrapper() {
+    //设置 Basic pipeline，作为调用Servlet的第一个处理器
     pipeline.setBasic(new SimpleWrapperValve());
   }
 
