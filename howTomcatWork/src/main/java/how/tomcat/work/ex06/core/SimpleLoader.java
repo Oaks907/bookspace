@@ -2,6 +2,9 @@ package how.tomcat.work.ex06.core;
 
 import org.apache.catalina.Container;
 import org.apache.catalina.DefaultContext;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Loader;
 
 import java.beans.PropertyChangeListener;
@@ -15,7 +18,7 @@ import java.net.URLStreamHandler;
  * Create by haifei on 17/7/2018.
  * 构建类加载器，在Tomcat中指明了要由那个文件中加载Servlet
  */
-public class SimpleLoader implements Loader {
+public class SimpleLoader implements Loader, Lifecycle {
 
   public static final String WEB_ROOT = System.getProperty("user.dir") + File.separator + "webroot";
 
@@ -92,6 +95,26 @@ public class SimpleLoader implements Loader {
   }
 
   public void removePropertyChangeListener(PropertyChangeListener listener) {
+
+  }
+
+  public void addLifecycleListener(LifecycleListener listener) {
+
+  }
+
+  public LifecycleListener[] findLifecycleListeners() {
+    return new LifecycleListener[0];
+  }
+
+  public void removeLifecycleListener(LifecycleListener listener) {
+
+  }
+
+  public void start() throws LifecycleException {
+    System.out.println("Starting SimpleLoader.");
+  }
+
+  public void stop() throws LifecycleException {
 
   }
 }

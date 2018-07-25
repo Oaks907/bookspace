@@ -1,4 +1,4 @@
-package how.tomcat.work.ex06;
+package how.tomcat.work.ex06.core;
 
 import org.apache.catalina.Lifecycle;
 import org.apache.catalina.LifecycleEvent;

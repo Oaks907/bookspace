@@ -2,6 +2,9 @@ package how.tomcat.work.ex06.core;
 
 import org.apache.catalina.Contained;
 import org.apache.catalina.Container;
+import org.apache.catalina.Lifecycle;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.LifecycleListener;
 import org.apache.catalina.Pipeline;
 import org.apache.catalina.Request;
 import org.apache.catalina.Response;
@@ -15,7 +18,7 @@ import java.io.IOException;
  * Create by haifei on 17/7/2018.
  * Pipeline，针对每一个请求而言
  */
-public class SimplePipeline implements Pipeline {
+public class SimplePipeline implements Pipeline, Lifecycle {
 
   protected Valve basic = null;
   protected Container container = null;
@@ -60,6 +63,26 @@ public class SimplePipeline implements Pipeline {
   }
 
   public void removeValve(Valve valve) {
+
+  }
+
+  public void addLifecycleListener(LifecycleListener listener) {
+
+  }
+
+  public LifecycleListener[] findLifecycleListeners() {
+    return new LifecycleListener[0];
+  }
+
+  public void removeLifecycleListener(LifecycleListener listener) {
+
+  }
+
+  public void start() throws LifecycleException {
+
+  }
+
+  public void stop() throws LifecycleException {
 
   }
 

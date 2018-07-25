@@ -1,19 +1,7 @@
 package how.tomcat.work.ex06.core;
 
-import org.apache.catalina.Cluster;
-import org.apache.catalina.Container;
-import org.apache.catalina.ContainerListener;
-import org.apache.catalina.InstanceListener;
-import org.apache.catalina.Loader;
-import org.apache.catalina.Logger;
-import org.apache.catalina.Manager;
-import org.apache.catalina.Mapper;
-import org.apache.catalina.Pipeline;
-import org.apache.catalina.Realm;
-import org.apache.catalina.Request;
-import org.apache.catalina.Response;
-import org.apache.catalina.Valve;
-import org.apache.catalina.Wrapper;
+import org.apache.catalina.*;
+import org.apache.catalina.util.LifecycleSupport;
 
 import javax.naming.directory.DirContext;
 import javax.servlet.Servlet;
@@ -25,14 +13,16 @@ import java.io.IOException;
 /**
  * Create by haifei on 17/7/2018.
  */
-public class SimpleWrapper implements Pipeline, Wrapper {
+public class SimpleWrapper implements Pipeline, Wrapper, Lifecycle {
 
   private Servlet instance = null;
   private String servletClass;
   private String name;
+  protected LifecycleSupport lifecycle = new LifecycleSupport(this);
   private SimplePipeline pipeline = new SimplePipeline(this);  //调用的Pipeline
   private Loader loader;  //加载器，用于加载请求所访问的Servlet
   protected Container parent = null;
+  protected boolean started = false;
 
   public SimpleWrapper() {
     //设置 Basic pipeline，作为调用Servlet的第一个处理器
@@ -351,5 +341,73 @@ public class SimpleWrapper implements Pipeline, Wrapper {
 
   public void unload() throws ServletException {
 
+  }
+
+  public void addLifecycleListener(LifecycleListener listener) {
+    lifecycle.addLifecycleListener(listener);
+  }
+
+  public LifecycleListener[] findLifecycleListeners() {
+    return new LifecycleListener[0];
+  }
+
+  public void removeLifecycleListener(LifecycleListener listener) {
+    lifecycle.removeLifecycleListener(listener);
+  }
+
+  public void start() throws LifecycleException {
+    System.out.println("Starting Wrapper " + name);
+    if (started) {
+      throw new LifecycleException("Wrapper already started");
+    }
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+    started = true;
+
+    // Start our subordinate components, if any
+    if ((loader != null) && (loader instanceof Lifecycle))
+      ((Lifecycle) loader).start();
+
+    // Start the Valves in our pipeline (including the basic), if any
+    if (pipeline instanceof Lifecycle) {
+      ((Lifecycle) pipeline).start();
+    }
+
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(START_EVENT, null);
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+  }
+
+  public void stop() throws LifecycleException {
+    System.out.println("Stopping wrapper " + name);
+    // Shut down our servlet instance (if it has been initialized)
+    try {
+      instance.destroy();
+    } catch (Throwable t) {
+    }
+    instance = null;
+    if (!started) {
+      throw new LifecycleException("Wrapper " + name + " not started");
+    }
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(BEFORE_STOP_EVENT, null);
+
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(STOP_EVENT, null);
+    started = false;
+
+    // Stop the Valves in our pipeline (including the basic), if any
+    if (pipeline instanceof Lifecycle) {
+      ((Lifecycle) pipeline).stop();
+    }
+
+    // Stop our subordinate components, if any
+    if ((loader != null) && (loader instanceof Lifecycle)) {
+      ((Lifecycle) loader).stop();
+    }
+
+    // Notify our interested LifecycleListeners
+    lifecycle.fireLifecycleEvent(AFTER_STOP_EVENT, null);
   }
 }

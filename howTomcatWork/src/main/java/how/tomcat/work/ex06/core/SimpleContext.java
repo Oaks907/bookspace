@@ -1,19 +1,6 @@
 package how.tomcat.work.ex06.core;
 
-import org.apache.catalina.Cluster;
-import org.apache.catalina.Container;
-import org.apache.catalina.ContainerListener;
-import org.apache.catalina.Context;
-import org.apache.catalina.Loader;
-import org.apache.catalina.Logger;
-import org.apache.catalina.Manager;
-import org.apache.catalina.Mapper;
-import org.apache.catalina.Pipeline;
-import org.apache.catalina.Realm;
-import org.apache.catalina.Request;
-import org.apache.catalina.Response;
-import org.apache.catalina.Valve;
-import org.apache.catalina.Wrapper;
+import org.apache.catalina.*;
 import org.apache.catalina.deploy.ApplicationParameter;
 import org.apache.catalina.deploy.ContextEjb;
 import org.apache.catalina.deploy.ContextEnvironment;
@@ -27,6 +14,7 @@ import org.apache.catalina.deploy.LoginConfig;
 import org.apache.catalina.deploy.NamingResources;
 import org.apache.catalina.deploy.SecurityConstraint;
 import org.apache.catalina.util.CharsetMapper;
+import org.apache.catalina.util.LifecycleSupport;
 
 import javax.naming.directory.DirContext;
 import javax.servlet.ServletContext;
@@ -39,15 +27,17 @@ import java.util.HashMap;
  * Create by haifei on 19/7/2018.
  * 上下文，对应一个web应用程序，包含的各种内容，同时可以作为一个Container(context)
  */
-public class SimpleContext implements Context, Pipeline {
+public class SimpleContext implements Context, Pipeline, Lifecycle {
 
   protected HashMap children = new HashMap();
   protected Loader loader = null;
+  protected LifecycleSupport lifecycle = new LifecycleSupport(this);
   protected SimplePipeline pipeline = new SimplePipeline(this);
   protected HashMap servletMappings = new HashMap();
   protected Mapper mapper = null;
   protected HashMap mappers = new HashMap();
   private Container parent = null;
+  protected boolean started = false;
 
   public SimpleContext() {
     pipeline.setBasic(new SimpleContextValve());
@@ -642,7 +632,7 @@ public class SimpleContext implements Context, Pipeline {
       if (mappers.get(mapper.getProtocol()) != null) {
         throw new IllegalArgumentException("addMapper: Protocol '" + mapper.getProtocol() + "'is not unique.");
       }
-      mapper.setContainer((Container)this);
+      mapper.setContainer((Container) this);
       mappers.put(mapper.getProtocol(), mapper);
       if (mappers.size() == 1) {
         this.mapper = mapper;
@@ -736,5 +726,77 @@ public class SimpleContext implements Context, Pipeline {
 
   public void removePropertyChangeListener(PropertyChangeListener listener) {
 
+  }
+
+  public void addLifecycleListener(LifecycleListener listener) {
+    lifecycle.addLifecycleListener(listener);
+  }
+
+  public LifecycleListener[] findLifecycleListeners() {
+    return new LifecycleListener[0];
+  }
+
+  public void removeLifecycleListener(LifecycleListener listener) {
+    lifecycle.removeLifecycleListener(listener);
+  }
+
+  public void start() throws LifecycleException {
+    if (started) {
+      throw new LifecycleException("SimpleContext has already started.");
+    }
+    lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+    started = true;
+
+
+    try {
+
+      if ((loader != null) && (loader instanceof Lifecycle)) {
+        ((Lifecycle) loader).start();
+      }
+      Container children[] = findChildren();
+      for (int i = 0; i < children.length; i++) {
+        if (children[i] instanceof Lifecycle) {
+          ((Lifecycle) children[i]).start();
+        }
+      }
+
+      if (pipeline instanceof Lifecycle) {
+        ((Lifecycle) pipeline).start();
+      }
+      lifecycle.fireLifecycleEvent(START_EVENT, null);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    lifecycle.fireLifecycleEvent(AFTER_START_EVENT, null);
+  }
+
+  public void stop() throws LifecycleException {
+    if (!started) {
+      throw new LifecycleException("SimpleContext has not been started.");
+    }
+    lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
+    lifecycle.fireLifecycleEvent(STOP_EVENT, null);
+    started = false;
+    try{
+      if (pipeline instanceof Lifecycle) {
+        ((Lifecycle) pipeline).stop();
+      }
+
+      Container children[] = findChildren();
+      for (int i = 0; i < children.length; i++) {
+        if (children[i] instanceof Lifecycle) {
+          ((Lifecycle) children[i]).stop();
+        }
+      }
+
+      if ((loader != null) && (loader instanceof Lifecycle)) {
+        ((Lifecycle) loader).stop();
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+
+    lifecycle.fireLifecycleEvent(AFTER_STOP_EVENT, null);
   }
 }
