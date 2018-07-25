@@ -16,6 +16,7 @@ import org.apache.catalina.Pipeline;
 import org.apache.catalina.Valve;
 import org.apache.catalina.Wrapper;
 import org.apache.catalina.connector.http.HttpConnector;
+import org.apache.catalina.logger.FileLogger;
 
 /**
  * Create by haifei on 20/7/2018.
@@ -52,6 +53,17 @@ public class Bootstrap2 {
     context.setLoader(loader);
     context.addServletMapping("/Primitive", "Primitive");
     context.addServletMapping("/Modern", "Modern");
+
+    // ------ add logger ----------
+    System.setProperty("catalina.base", System.getProperty("user.dir"));
+    FileLogger logger = new FileLogger();
+    logger.setPrefix("FileLog_");
+    logger.setSuffix(".txt");
+    logger.setTimestamp(true);
+    logger.setDirectory("webroot");
+    context.setLogger(logger);
+    //--------------------------------
+
     httpConnector.setContainer(context);
 
     try {
@@ -60,6 +72,7 @@ public class Bootstrap2 {
       ((Lifecycle) context).start();
 
       System.in.read();
+      ((Lifecycle) context).stop();
     } catch (Exception e) {
       e.printStackTrace();
     }
