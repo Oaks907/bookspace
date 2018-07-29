@@ -2,6 +2,7 @@ package how.tomcat.work.ex09.core;
 
 import org.apache.catalina.Contained;
 import org.apache.catalina.Container;
+import org.apache.catalina.Context;
 import org.apache.catalina.Request;
 import org.apache.catalina.Response;
 import org.apache.catalina.Valve;
@@ -35,7 +36,7 @@ public class SimpleWrapperValve implements Valve, Contained{
     return null;
   }
 
-  public void invoke(Request request, Response response, ValveContext context) throws IOException, ServletException {
+  public void invoke(Request request, Response response, ValveContext valveContext) throws IOException, ServletException {
 
     //???
     SimpleWrapper wrapper = (SimpleWrapper) getContainer();
@@ -50,6 +51,9 @@ public class SimpleWrapperValve implements Valve, Contained{
     if (sres instanceof HttpServletResponse) {
       hres = (HttpServletResponse) sres;
     }
+
+    Context context = (Context) wrapper.getParent();
+    request.setContext(context);
 
     servlet = wrapper.allocate();
     if (hres != null && hreq != null) {
