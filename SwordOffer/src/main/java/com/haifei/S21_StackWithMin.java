@@ -5,7 +5,7 @@ import java.util.Stack;
 /**
  * Create by haifei on 16/7/2018.
  */
-public class S20_StackWithMin {
+public class S21_StackWithMin {
 
   Stack<Integer> stack;
   Stack<Integer> minStack;
@@ -13,7 +13,7 @@ public class S20_StackWithMin {
   /**
    * initialize your data structure here.
    */
-  public S20_StackWithMin() {
+  public S21_StackWithMin() {
     stack = new Stack();
     minStack = new Stack();
   }
