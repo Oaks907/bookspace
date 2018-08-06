@@ -134,6 +134,7 @@ public final class StandardWrapper
     /**
      * The count of allocations that are currently active (even if they
      * are for the same instance, as will be true on a non-STM servlet).
+     * 当前active的活动计数
      */
     private int countAllocated = 0;
 
@@ -206,6 +207,7 @@ public final class StandardWrapper
 
     /**
      * The fully qualified servlet class name for this servlet.
+     * 此servlet的完全限定名
      */
     private String servletClass = null;
 
@@ -230,6 +232,7 @@ public final class StandardWrapper
 
     /**
      * Number of instances currently loaded for a STM servlet.
+     * SingleThreadModel当前存在的实例数
      */
     private int nInstances = 0;
 
@@ -634,10 +637,12 @@ public final class StandardWrapper
             log("Allocating an instance");
 
         // If we are currently unloading this servlet, throw an exception
+        //如果正在卸载 servlet，抛出异常
         if (unloading)
             throw new ServletException
               (sm.getString("standardWrapper.unloading", getName()));
 
+        //SingleThreadModel保证servlet中的service方法不会同时被两个线程执行
         // If not SingleThreadedModel, return the same instance every time
         if (!singleThreadModel) {
 
@@ -668,6 +673,7 @@ public final class StandardWrapper
 
         synchronized (instancePool) {
 
+            //
             while (countAllocated >= nInstances) {
                 // Allocate a new instance if possible, or else wait
                 if (nInstances < maxInstances) {
@@ -814,6 +820,7 @@ public final class StandardWrapper
     public synchronized Servlet loadServlet() throws ServletException {
 
         // Nothing to do if we already have an instance or an instance pool
+        //非STM且instance不为null
         if (!singleThreadModel && (instance != null))
             return instance;
 
@@ -826,6 +833,7 @@ public final class StandardWrapper
             // case Catalina-specific code in Jasper - it also requires that the
             // servlet path be replaced by the <jsp-file> element content in
             // order to be completely effective
+            // 检查请求的servlet是不是一个JSP界面。若是，loadServlet()方法需要获取代表该JSP页面的实际Servlet类
             String actualClass = servletClass;
             if ((actualClass == null) && (jspFile != null)) {
                 Wrapper jspWrapper = (Wrapper)
@@ -842,6 +850,7 @@ public final class StandardWrapper
             }
 
             // Acquire an instance of the class loader to be used
+            // 获取载入器
             Loader loader = getLoader();
             if (loader == null) {
                 unavailable(null);
@@ -852,6 +861,7 @@ public final class StandardWrapper
             ClassLoader classLoader = loader.getClassLoader();
 
             // Special case class loader for a container provided servlet
+            // Catalina提供了一些用于访问servlet容器内部数据的专用servlet。如果是，就可以访问catalina的内部数据
             if (isContainerProvidedServlet(actualClass)) {
                 classLoader = this.getClass().getClassLoader();
                 log(sm.getString
@@ -904,6 +914,7 @@ public final class StandardWrapper
             }
 
             // Special handling for ContainerServlet instances
+            // 如果servlet类是一个ContainerServlet。调用setWrapper，传入StandardWrapper
             if ((servlet instanceof ContainerServlet) &&
                 isContainerProvidedServlet(actualClass)) {
 System.out.println("calling setWrapper");                  

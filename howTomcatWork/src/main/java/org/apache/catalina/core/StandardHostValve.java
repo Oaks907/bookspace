@@ -131,6 +131,8 @@ final class StandardHostValve
      * Select the appropriate child Context to process this request,
      * based on the specified request URI.  If no matching Context can
      * be found, return an appropriate HTTP error.
+     * 基于Request URI选择合适的child Context来处理这个请求
+     * 如果找不到匹配的Context，返回一个HTTP error
      *
      * @param request Request to be processed
      * @param response Response to be produced

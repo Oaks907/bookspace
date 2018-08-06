@@ -170,18 +170,20 @@ public class StandardHostMapper
      * Return the child Container that should be used to process this Request,
      * based upon its characteristics.  If no such child Container can be
      * identified, return <code>null</code> instead.
+     * 返回应该处理这个 Request 的 child Container
      *
      * @param request Request being processed
      * @param update Update the Request to reflect the mapping selection?
      */
     public Container map(Request request, boolean update) {
-        // Has this request already been mapped?
+        // Has this request already been mapped? 这个Request是否已经被映射？
+        //不更新且request存在处理该Request容器
         if (update && (request.getContext() != null))
             return (request.getContext());
 
         // Perform mapping on our request URI
         String uri = ((HttpRequest) request).getDecodedRequestURI();
-        Context context = host.map(uri);
+        Context context = host.map(uri);    //判断是否存在匹配到该uri的Context
 
         // Update the request (if requested) and return the selected Context
         if (update) {

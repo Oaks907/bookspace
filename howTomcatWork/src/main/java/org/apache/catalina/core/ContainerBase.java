@@ -944,6 +944,9 @@ public abstract class ContainerBase
      * Return the Mapper associated with the specified protocol, if there
      * is one.  If there is only one defined Mapper, use it for all protocols.
      * If there is no matching Mapper, return <code>null</code>.
+     * 返回和指定协议相关的Mapper
+     * 如果存在一个定义的Mapper,就使用它处理所有的协议
+     * 如果没有匹配的Mapper，返回null
      *
      * @param protocol Protocol for which to find a Mapper
      */
@@ -1355,6 +1358,7 @@ public abstract class ContainerBase
     /**
      * Add a default Mapper implementation if none have been configured
      * explicitly.
+     * 添加一个默认的Mapper，如果没有明确指明设置
      *
      * @param mapperClass Java class name of the default Mapper
      */

@@ -597,7 +597,9 @@ public class StandardHost
     /**
      * Return the Context that would be used to process the specified
      * host-relative request URI, if any; otherwise return <code>null</code>.
-     *
+     * 根据uri来获取相应的Context处理HTTP请求
+     * 如果没有匹配到Context，就返回默认的URL
+     * 如果默认的为null，就返回null
      * @param uri Request URI to be mapped
      */
     public Context map(String uri) {
