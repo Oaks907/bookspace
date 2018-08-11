@@ -42,6 +42,13 @@ import org.apache.catalina.util.StringParser;
  * @deprecated
  */
 
+/**
+ * 一个Request processor (包含线程)，会被HttpConnector使用处理独立的request请求。
+ * Connector会在pool(这个应该是指Connector中collection中的processor)中分配一个processor，同时指定一个socket。
+ * 接着这个Processor将会开始处理过程。
+ * 当这个processor处理完成后，他将自我回收
+ */
+
 final class HttpProcessor
     implements Lifecycle, Runnable {
 
@@ -87,12 +94,15 @@ final class HttpProcessor
 
     /**
      * Is there a new socket available?
+     * 判断socket是否存活.
+     * assign socket的该状态置为true
      */
     private boolean available = false;
 
 
     /**
      * The HttpConnector with which this processor is associated.
+     * 控制processor的HttpConnector，在实例化HttpProcessor的时候，传入
      */
     private HttpConnector connector = null;
 
@@ -105,12 +115,14 @@ final class HttpProcessor
 
     /**
      * The identifier of this processor, unique per connector.
+     * 每个processor独一无二的 id
      */
     private int id = 0;
 
 
     /**
      * The lifecycle event support for this component.
+     * 这个组件的生命周期控制
      */
     private LifecycleSupport lifecycle = new LifecycleSupport(this);
 
@@ -148,6 +160,7 @@ final class HttpProcessor
 
     /**
      * The HTTP request object we will pass to our associated container.
+     * 构建的HTTP request，在后序的处理过程中，将会被传递到后面的container
      */
     private HttpRequestImpl request = null;
 
@@ -160,6 +173,7 @@ final class HttpProcessor
 
     /**
      * The actual server port for our Connector.
+     * Connector实际的处理端口
      */
     private int serverPort = 0;
 
@@ -192,6 +206,8 @@ final class HttpProcessor
 
     /**
      * The background thread.
+     * 后台线程，这个将这个线程设置为了Daemon守护线程，防止程序终止。
+     * 这里提供了start与stop方法，Tomcat的整个程序的启动与终止受到这个控制
      */
     private Thread thread = null;
 
@@ -204,6 +220,7 @@ final class HttpProcessor
 
     /**
      * The thread synchronization object.
+     * 用于控制线程同步的Object
      */
     private Object threadSync = new Object();
 
@@ -216,6 +233,7 @@ final class HttpProcessor
 
     /**
      * HTTP/1.1 client.
+     * 是否是HTTP／1.1协议的客户端
      */
     private boolean http11 = true;
 
@@ -282,6 +300,10 @@ final class HttpProcessor
      * <b>NOTE</b>:  This method is called from our Connector's thread.  We
      * must assign it to our own thread so that multiple simultaneous
      * requests can be handled.
+     * 处理指定的Socket即将到来的TCP/IP connection.
+     * 在处理的过程中，出现任何的异常都会被记录为logged and swallowed
+     * 这个方法被我们的Connector线程中调用。
+     * 我们必须分配给它一个我们的线程以便后面大量的request能够被同时处理
      *
      * @param socket TCP socket to process
      */
@@ -480,6 +502,8 @@ final class HttpProcessor
 
     /**
      * Parse and record the connection parameters related to this request.
+     * 解析并记录与这个request的相关的连接参数
+     * 设置了inet、server port 参数
      *
      * @param socket The socket on which we are connected
      *
@@ -639,6 +663,8 @@ final class HttpProcessor
     /**
      * Parse the incoming HTTP request and set the corresponding HTTP request
      * properties.
+     * 解析HTTP请求的请求行
+     * POST /index HTTP/1.1
      *
      * @param input The input stream attached to our socket
      * @param output The output stream of the socket
@@ -650,6 +676,7 @@ final class HttpProcessor
         throws IOException, ServletException {
 
         // Parse the incoming request line
+        //由input中解析请求行，将解析的结果放入到requestLine中
         input.readRequestLine(requestLine);
 
         // When the previous method returns, we're actually processing a
@@ -691,6 +718,7 @@ final class HttpProcessor
         }
 
         // Parse any query parameters out of the request URI
+        //解析 ？后的查询参数
         int question = requestLine.indexOf("?");
         if (question >= 0) {
             request.setQueryString
@@ -725,6 +753,7 @@ final class HttpProcessor
         if (semicolon >= 0) {
             String rest = uri.substring(semicolon + match.length());
             int semicolon2 = rest.indexOf(';');
+            //设置SessionId
             if (semicolon2 >= 0) {
                 request.setRequestedSessionId(rest.substring(0, semicolon2));
                 rest = rest.substring(semicolon2);
@@ -873,10 +902,13 @@ final class HttpProcessor
      * to this Processor.  Any exceptions that occur during processing must be
      * swallowed and dealt with.
      *
+     * 处理被分配给该Processor的socket即将到来的HTTP request。
+     * 任何异常的出现豆浆被记录和处理
+     *
      * @param socket The socket on which we are connected to the client
      */
     private void process(Socket socket) {
-        boolean ok = true;
+        boolean ok = true;   //处理过程是否正常
         boolean finishResponse = true;
         SocketInputStream input = null;
         OutputStream output = null;
@@ -914,11 +946,13 @@ final class HttpProcessor
             try {
                 if (ok) {
 
+                    //由Socket记录到记录Server Port与 Inet参数
                     parseConnection(socket);
                     parseRequest(input, output);
                     if (!request.getRequest().getProtocol()
                         .startsWith("HTTP/0"))
                         parseHeaders(input);
+                    //如果是Http/1.1,发送ACK确认帧
                     if (http11) {
                         // Sending a request acknowledge back to the client if
                         // requested.
@@ -969,6 +1003,9 @@ final class HttpProcessor
                 ((HttpServletResponse) response).setHeader
                     ("Date", FastHttpDateFormat.getCurrentDate());
                 if (ok) {
+                    //HttpProcessor接管Socket，由里面的Stream创建出request,response
+                    //并解析请求头，为request中各个项赋值
+                    //调用Container继续处理Request，response
                     connector.getContainer().invoke(request, response);
                 }
             } catch (ServletException e) {
@@ -996,6 +1033,7 @@ final class HttpProcessor
             // Finish up the handling of the request
             if (finishResponse) {
                 try {
+                    //关闭输出流等相关操作
                     response.finishResponse();
                 } catch (IOException e) {
                     ok = false;
@@ -1036,6 +1074,7 @@ final class HttpProcessor
         }
 
         try {
+            //清空Socket中的input stream
             shutdownInput(input);
             socket.close();
         } catch (IOException e) {
@@ -1050,6 +1089,7 @@ final class HttpProcessor
     }
 
 
+    //
     protected void shutdownInput(InputStream input) {
         try {
             int available = input.available();
@@ -1102,12 +1142,15 @@ final class HttpProcessor
 
     /**
      * Start the background processing thread.
+     * 真正启动线程
      */
     private void threadStart() {
 
         log(sm.getString("httpProcessor.starting"));
 
         thread = new Thread(this, threadName);
+        //守护线程，是指在程序运行的时候在后台提供一种通用服务的线程，比如垃圾回收线程就是一个很称职的守护者，并且这种线程并不属于程序中不可或缺的部分。
+        // 因此，当所有的非守护线程结束时，程序也就终止了，同时会杀死进程中的所有守护线程。反过来说，只要任何非守护线程还在运行，程序就不会终止。
         thread.setDaemon(true);
         thread.start();
 
@@ -1182,6 +1225,7 @@ final class HttpProcessor
 
     /**
      * Start the background thread we will use for request processing.
+     * 启动后台线程，我们将用它开始处理Request的过程
      *
      * @exception LifecycleException if a fatal startup error occurs
      */
@@ -1191,7 +1235,7 @@ final class HttpProcessor
             throw new LifecycleException
                 (sm.getString("httpProcessor.alreadyStarted"));
         lifecycle.fireLifecycleEvent(START_EVENT, null);
-        started = true;
+        started = true; //start启动标志位
 
         threadStart();
 

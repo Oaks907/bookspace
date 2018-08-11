@@ -61,12 +61,15 @@ public final class HttpConnector
     /**
      * The IP address on which to bind, if any.  If <code>null</code>, all
      * addresses on the server will be bound.
+     * 绑定的IP地址，
+     * 如果为null，所有服务器上的地址将会被绑定
      */
     private String address = null;
 
 
     /**
      * The input buffer size we should create on input streams.
+     * input stream 的
      */
     private int bufferSize = 2048;
 
@@ -79,6 +82,7 @@ public final class HttpConnector
 
     /**
      * The set of processors that have ever been created.
+     * 已经被创建的处理器set集合
      */
     private Vector created = new Vector();
 
@@ -97,12 +101,14 @@ public final class HttpConnector
 
     /**
      * The "enable DNS lookups" flag for this Connector.
+     * DNS查找
      */
     private boolean enableLookups = false;
 
 
     /**
      * The server socket factory for this component.
+     * Socket监听端口工厂类型
      */
     private ServerSocketFactory factory = null;
 
@@ -115,7 +121,8 @@ public final class HttpConnector
 
 
     /**
-     * The lifecycle event support for this component.
+     * The lifecycle event support for this component
+     * 生命周期事件
      */
     protected LifecycleSupport lifecycle = new LifecycleSupport(this);
 
@@ -135,12 +142,14 @@ public final class HttpConnector
     /**
      * Timeout value on the incoming connection.
      * Note : a value of 0 means no timeout.
+     * 默认连接超时时间：60000毫秒
      */
     private int connectionTimeout = Constants.DEFAULT_CONNECTION_TIMEOUT;
 
 
     /**
      * The port number on which we listen for HTTP requests.
+     * 监听HTTP request的端口
      */
     private int port = 8081;
 
@@ -148,6 +157,7 @@ public final class HttpConnector
     /**
      * The set of processors that have been created but are not currently
      * being used to process a request.
+     * 已经创建但是没有被使用的 processors
      */
     private Stack processors = new Stack();
 
@@ -157,6 +167,12 @@ public final class HttpConnector
      * were directed.  This is useful when operating Tomcat behind a proxy
      * server, so that redirects get constructed accurately.  If not specified,
      * the server name included in the <code>Host</code> header is used.
+     * 分配给该Connector的request的来源服务器名称。
+     * 当在代理服务器之后操作Tomcat的时候，这个字段是十分有用的，以便重定向得到正确的构建
+     * 如果没有指定，这个名字默认取自Header的Host字段
+     *
+     * 在设置了ProxyName与ProxyPort后(Tomcat中配置了代理)，在Web应用中的servlet任务，所有的代理请求都是
+     * 指向 proxyPort端口的proxyName
      */
     private String proxyName = null;
 
@@ -166,6 +182,7 @@ public final class HttpConnector
      * were directed.  This is useful when operating Tomcat behind a proxy
      * server, so that redirects get constructed accurately.  If not specified,
      * the port number specified by the <code>port</code> property is used.
+     *
      */
     private int proxyPort = 0;
 
@@ -211,18 +228,22 @@ public final class HttpConnector
 
     /**
      * Has this component been started yet?
+     * 该组件启动的标志位，在start()方法调用时，置为true
+     *
      */
     private boolean started = false;
 
 
     /**
      * The shutdown signal to our background thread
+     * 后台线程关闭标志位
      */
     private boolean stopped = false;
 
 
     /**
      * The background thread.
+     * Daemon守护线程
      */
     private Thread thread = null;
 
@@ -235,6 +256,7 @@ public final class HttpConnector
 
     /**
      * The thread synchronization object.
+     * 线程同步object
      */
     private Object threadSync = new Object();
 
@@ -247,6 +269,7 @@ public final class HttpConnector
 
     /**
      * Use TCP no delay ?
+     * 设置启用Nagle算法，减少网络中发送小数据包的数量
      */
     private boolean tcpNoDelay = true;
 
@@ -464,6 +487,8 @@ public final class HttpConnector
 
     /**
      * Return the "enable DNS lookups" flag.
+     * web程序要记录客户端的消息时，它也会记录客户端的IP地址或者通过域名服务器查找机器名记录为IP地址。
+     * DNS查找需要占用网络，并且包括可能从很远的服务器或者不起作用的服务器上查找相应IP的过程，这样会消耗一定的时间
      */
     public boolean getEnableLookups() {
 
@@ -732,6 +757,7 @@ public final class HttpConnector
     /**
      * Create (or allocate) and return a Request object suitable for
      * specifying the contents of a Request to the responsible Container.
+     * 创建(或分配)和返回适合指定Request给负责的Container
      */
     public Request createRequest() {
 
@@ -747,6 +773,7 @@ public final class HttpConnector
     /**
      * Create (or allocate) and return a Response object suitable for
      * receiving the contents of a Response from the responsible Container.
+     * 创建(或分配)和返回适合指定Response给负责的Container
      */
     public Response createResponse() {
 
@@ -784,15 +811,20 @@ public final class HttpConnector
      * processing a specific HTTP request, if possible.  If the maximum
      * allowed processors have already been created and are in use, return
      * <code>null</code> instead.
+     * 创建或者分配一个合适的processor，用来处理指定的HTTP request。
+     * 如果processor达到了最大创建个数且都在使用，返回 null
      */
     private HttpProcessor createProcessor() {
 
         synchronized (processors) {
+
+            //如果存在已经创建但是还没有被使用的processor
             if (processors.size() > 0) {
                 // if (debug >= 2)
                 // log("createProcessor: Reusing existing processor");
                 return ((HttpProcessor) processors.pop());
             }
+            //不存在没有被使用已经创建的processor,且没有达到最大的创建个数
             if ((maxProcessors > 0) && (curProcessors < maxProcessors)) {
                 // if (debug >= 2)
                 // log("createProcessor: Creating new processor");
@@ -856,6 +888,7 @@ public final class HttpConnector
     /**
      * Create and return a new processor suitable for processing HTTP
      * requests and returning the corresponding responses.
+     * 创建一个Processor来处理http请求的request并且返回相应的response
      */
     private HttpProcessor newProcessor() {
 
@@ -870,6 +903,7 @@ public final class HttpConnector
                 return (null);
             }
         }
+        //将processor放入到已经创建的collection中
         created.addElement(processor);
         return (processor);
 
@@ -880,6 +914,7 @@ public final class HttpConnector
      * Open and return the server socket for this Connector.  If an IP
      * address has been specified, the socket will be opened only on that
      * address; otherwise it will be opened on all addresses.
+     * 打开并且返回 Server Socket
      *
      * @exception IOException                input/output or network error
      * @exception KeyStoreException          error instantiating the
@@ -913,6 +948,7 @@ public final class HttpConnector
 
         // Open a server socket on the specified address
         try {
+            //在指定的IP地址上，创建Server Socket
             InetAddress is = InetAddress.getByName(address);
             log(sm.getString("httpConnector.anAddress", address));
             try {
@@ -939,21 +975,26 @@ public final class HttpConnector
     /**
      * The background thread that listens for incoming TCP/IP connections and
      * hands them off to an appropriate processor.
+     * 后台线程监听即将到来的connections，
+     * 然后将connect传递给合适的processor
      */
     public void run() {
         // Loop until we receive a shutdown command
+        //stopped 后台线程停止标志位
         while (!stopped) {
             // Accept the next incoming connection from the server socket
             Socket socket = null;
             try {
                 //                if (debug >= 3)
                 //                    log("run: Waiting on serverSocket.accept()");
+                //循环监听socket，是否存在需求处理request
+                //当没有request到来是，程序会阻塞在这里
                 socket = serverSocket.accept();
                 //                if (debug >= 3)
                 //                    log("run: Returned from serverSocket.accept()");
                 if (connectionTimeout > 0)
-                    socket.setSoTimeout(connectionTimeout);
-                socket.setTcpNoDelay(tcpNoDelay);
+                    socket.setSoTimeout(connectionTimeout); //设置超时时间60000毫秒
+                socket.setTcpNoDelay(tcpNoDelay);   //设置启用Negle算法
             } catch (AccessControlException ace) {
                 log("socket accept security exception", ace);
                 continue;
@@ -962,7 +1003,7 @@ public final class HttpConnector
                 //                    log("run: Accept returned IOException", e);
                 try {
                     // If reopening fails, exit
-                    synchronized (threadSync) {
+                    synchronized (threadSync) { //threadSync 线程同步object，没有其他作用
                         if (started && !stopped)
                             log("accept error: ", e);
                         if (!stopped) {
@@ -1100,6 +1141,7 @@ public final class HttpConnector
 
     /**
      * Initialize this connector (create ServerSocket here!)
+     * 初始化connetor，这里打开ServerSocket
      */
     public void initialize()
     throws LifecycleException {

@@ -63,6 +63,7 @@ public interface Connector {
     /**
      * Return the Container used for processing requests received by this
      * Connector.
+     * 获取处理该 Connector 的 container
      */
     public Container getContainer();
 
@@ -114,12 +115,16 @@ public interface Connector {
      * Return the port number to which a request should be redirected if
      * it comes in on a non-SSL port and is subject to a security constraint
      * with a transport guarantee that requires SSL.
+     * 返回请求重定向的端口号
+     * 它出现在非SSL端口上，并受到安全约束。
+     * 需要SSL的传输保证。
      */
     public int getRedirectPort();
 
 
     /**
      * Set the redirect port number.
+     * 设置非SSL端口到SSL的重定向端口
      *
      * @param redirectPort The redirect port number (non-SSL to SSL)
      */
@@ -129,6 +134,7 @@ public interface Connector {
     /**
      * Return the scheme that will be assigned to requests received
      * through this connector.  Default value is "http".
+     * 返回通过connector接收到的，将要分配给请求的scheme。默认为http
      */
     public String getScheme();
 

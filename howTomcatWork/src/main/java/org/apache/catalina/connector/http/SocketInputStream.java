@@ -8,6 +8,7 @@ import org.apache.catalina.util.StringManager;
 /**
  * Extends InputStream to be more efficient reading lines during HTTP
  * header processing.
+ * 为了更方便读取HTTP header的每一行
  *
  * @author <a href="mailto:remm@apache.org">Remy Maucherat</a>
  * @deprecated
@@ -116,6 +117,9 @@ public class SocketInputStream extends InputStream {
      * Read the request line, and copies it to the given buffer. This
      * function is meant to be used during the HTTP request header parsing.
      * Do NOT attempt to read the request body using it.
+     * 读取Request line，然后将它拷贝到给的buffer中。
+     * 这个函数是用于HTTP request的 header parsing。
+     * 不要试图读取 request body 通过这个函数
      *
      * @param requestLine Request line object
      * @throws IOException If an exception occurs during the underlying socket

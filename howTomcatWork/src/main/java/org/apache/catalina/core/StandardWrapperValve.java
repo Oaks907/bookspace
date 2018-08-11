@@ -89,6 +89,9 @@ final class StandardWrapperValve
      *
      * @exception IOException if an input/output error occurred
      * @exception ServletException if a servlet error occurred
+     *
+     * 执行与该servlet相关的所有过滤器,
+     * 调用servlet的service方法
      */
     public void invoke(Request request, Response response,
                        ValveContext valveContext)

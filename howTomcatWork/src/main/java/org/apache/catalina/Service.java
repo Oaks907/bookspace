@@ -79,6 +79,13 @@ package org.apache.catalina;
  * @version $Revision: 1.7 $ $Date: 2001/11/06 22:33:46 $
  */
 
+/**
+ * 一个Service包含一个或者更多的Connector的group，它们分享同一个Container为了处理它们即将到来的request
+ * 这种安排使non-ssl,ssl connector能够共享同样数量的web app
+ *
+ * 一个JVM可以包含任意数量的service instance; 然而，它们是完全独立与其他的，而且是仅仅分享基本的JVM设备和系统上的类
+ */
+
 public interface Service {
 
 
@@ -136,7 +143,7 @@ public interface Service {
      */
     public void setServer(Server server);
 
-    
+
     // --------------------------------------------------------- Public Methods
 
 
