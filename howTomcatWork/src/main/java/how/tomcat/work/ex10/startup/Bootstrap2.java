@@ -58,7 +58,7 @@ public class Bootstrap2 {
     LoginConfig loginConfig = new LoginConfig();
     loginConfig.setRealmName("Simple User Database Realm");
 
-    Realm realm = new SimpleRealm();
+    Realm realm = new SimpleUserDatabaseRealm();
     ((SimpleUserDatabaseRealm) realm).createDatabase("conf/tomcat-users.xml");
     context.setRealm(realm);
     context.addConstraint(constraint);
@@ -69,7 +69,7 @@ public class Bootstrap2 {
     try {
       connector.initialize();
       ((Lifecycle) connector).start();
-      ((Lifecycle) connector).start();
+      ((Lifecycle) context).start();
       System.in.read();
       ((Lifecycle) context).start();
     } catch (Exception e) {

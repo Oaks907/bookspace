@@ -3,6 +3,7 @@ package how.tomcat.work.ex10.startup;
 import how.tomcat.work.ex10.Realm.SimpleRealm;
 import how.tomcat.work.ex10.core.SimpleContextConfig;
 import how.tomcat.work.ex10.core.SimpleWrapper;
+
 import org.apache.catalina.Connector;
 import org.apache.catalina.Context;
 import org.apache.catalina.Lifecycle;
@@ -34,7 +35,7 @@ public class Bootstrap1 {
     wrapper2.setServletClass("ModernServlet");
 
     Context context = new StandardContext();
-    context.setPath("/");
+    context.setPath("/myApp");
     context.setDocBase("myApp");
     LifecycleListener listener = new SimpleContextConfig();
     ((Lifecycle) context).addLifecycleListener(listener);
@@ -69,25 +70,11 @@ public class Bootstrap1 {
     try {
       connector.initialize();
       ((Lifecycle) connector).start();
-      ((Lifecycle) connector).start();
-      System.in.read();
       ((Lifecycle) context).start();
+      System.in.read();
+      ((Lifecycle) context).stop();
     } catch (Exception e) {
       e.printStackTrace();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   }
 }
