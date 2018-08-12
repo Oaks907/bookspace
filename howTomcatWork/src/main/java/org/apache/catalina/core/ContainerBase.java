@@ -1143,6 +1143,7 @@ public abstract class ContainerBase
 
     /**
      * Prepare for active use of the public methods of this Component.
+     * 为了节省资源，这里统一开启线程，周期性的执行一些操作
      *
      * @exception LifecycleException if this component detects a fatal error
      *  that prevents it from being started

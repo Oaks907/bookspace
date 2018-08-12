@@ -337,6 +337,7 @@ public class WebappLoader
         support.firePropertyChange("container", oldContainer, this.container);
 
         // Register with the new Container (if any)
+        //如果容器是container，就设置Reloadable属性
         if ((this.container != null) && (this.container instanceof Context)) {
             setReloadable( ((Context) this.container).getReloadable() );
             ((Context) this.container).addPropertyChangeListener(this);
@@ -480,6 +481,7 @@ public class WebappLoader
                                    new Boolean(this.reloadable));
 
         // Start or stop our background thread if required
+        //开启一个线程不停的检测文件是否变化，进行reloader操作
         if (!started)
             return;
         if (!oldReloadable && this.reloadable)

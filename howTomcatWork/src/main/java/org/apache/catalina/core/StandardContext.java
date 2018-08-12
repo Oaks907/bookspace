@@ -145,6 +145,7 @@ public class StandardContext
     public StandardContext() {
 
         super();
+        //StandardContextValve,基础阀，会处理从连接器中接收到的每个HTTP请求
         pipeline.setBasic(new StandardContextValve());
         namingResources.setContainer(this);
 
@@ -177,6 +178,7 @@ public class StandardContext
 
     /**
      * The application available flag for this Context.
+     * 表明该StandardContext对象是否可用
      */
     private boolean available = false;
 
@@ -196,6 +198,7 @@ public class StandardContext
 
     /**
      * The "correctly configured" flag for this Context.
+     * StandardContext是否正确的配置
      */
     private boolean configured = false;
 
@@ -339,6 +342,8 @@ public class StandardContext
 
     /**
      * The reloadable flag for this web application.
+     * 定义reloadable属性来指定应用程序是否能够重载。
+     * 当web.xml文件发生变化时或这WEB-INF/classes目录发生变化时，应用程序会重载
      */
     private boolean reloadable = false;
 
@@ -2341,6 +2346,7 @@ public class StandardContext
     /**
      * Process the specified Request, and generate the corresponding Response,
      * according to the design of this particular Container.
+     * 由与其相关的连接器调用，或者当StandardContext实例是Host容器的一个子容器时，由Host实例的 invoke方法调用
      *
      * @param request Request to be processed
      * @param response Response to be produced
@@ -2354,6 +2360,7 @@ public class StandardContext
         throws IOException, ServletException {
 
         // Wait if we are reloading
+        //检查程序是否在重载过程中，若是，等待程序重载完成
         while (getPaused()) {
             try {
                 Thread.sleep(1000);
@@ -2363,6 +2370,7 @@ public class StandardContext
         }
 
         // Normal request processing
+        //将工作移到StandardContextValve类中的invoke方法中
         if (swallowOutput) {
             try {
                 SystemLogHandler.startCapture();
@@ -3347,15 +3355,19 @@ public class StandardContext
             log("Starting");
 
         // Notify our interested LifecycleListeners
+        //触发BEFORE_START事件
         lifecycle.fireLifecycleEvent(BEFORE_START_EVENT, null);
 
         if (debug >= 1)
             log("Processing start(), current available=" + getAvailable());
+
+        //将available与configured属性配置为false
         setAvailable(false);
         setConfigured(false);
         boolean ok = true;
 
         // Add missing components as necessary
+        //配置资源
         if (getResources() == null) {   // (1) Required by Loader
             if (debug >= 1)
                 log("Configuring default Resources");
@@ -3378,6 +3390,7 @@ public class StandardContext
                 ((BaseDirContext) dirContext).allocate();
             }
         }
+        //设置载入器
         if (getLoader() == null) {      // (2) Required by Manager
             if (getPrivileged()) {
                 if (debug >= 1)
@@ -3389,6 +3402,7 @@ public class StandardContext
                 setLoader(new WebappLoader(getParentClassLoader()));
             }
         }
+        //设置Session管理器
         if (getManager() == null) {     // (3) After prerequisites
             if (debug >= 1)
                 log("Configuring default Manager");
@@ -3396,9 +3410,11 @@ public class StandardContext
         }
 
         // Initialize character set mapper
+        //初始化字符集映射器
         getCharsetMapper();
 
         // Post work directory
+        //启动与该Context容器相关联的组件
         postWorkDirectory();
 
         // Reading the "catalina.useNaming" environment variable
@@ -3428,6 +3444,7 @@ public class StandardContext
 
             try {
 
+                //添加一个Wrapper实例，
                 addDefaultMapper(this.mapperClass);
                 started = true;
 
