@@ -152,6 +152,7 @@ final class StandardHostValve
         }
 
         // Select the Context to be used for this Request
+        //选择一个Context(这里应该是指子容器)继续处理Request
         StandardHost host = (StandardHost) getContainer();
         Context context = (Context) host.map(request, true);
         if (context == null) {
@@ -166,6 +167,7 @@ final class StandardHostValve
             (context.getLoader().getClassLoader());
 
         // Update the session last access time for our session (if any)
+        //更新session最后的访问时间
         HttpServletRequest hreq = (HttpServletRequest) request.getRequest();
         String sessionId = hreq.getRequestedSessionId();
         if (sessionId != null) {

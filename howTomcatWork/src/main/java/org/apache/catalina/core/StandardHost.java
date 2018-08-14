@@ -709,6 +709,7 @@ public class StandardHost
      *  that prevents it from being started
      */
     public synchronized void start() throws LifecycleException {
+        //添加两个Value，分别为：errorReportValue,ErrorDispatcherValve
         // Set error report valve
         if ((errorReportValveClass != null)
             && (!errorReportValveClass.equals(""))) {

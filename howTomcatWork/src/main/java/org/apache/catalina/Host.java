@@ -74,10 +74,15 @@ package org.apache.catalina;
  * <li>You wish to run Catalina in with a standalone HTTP connector, but still
  *     want support for multiple virtual hosts.
  * </ul>
+ * 你想要使用Interceptors来产看通过这个特定虚拟主机的每个请求
+ * 你想要运行一个独立的HTTP connector，但是仍需要为多个虚拟host提供支持
+ *
  * In general, you would not use a Host when deploying Catalina connected
  * to a web server (such as Apache), because the Connector will have
  * utilized the web server's facilities to determine which Context (or
  * perhaps even which Wrapper) should be utilized to process this request.
+ * 一般来说，当deploy一个catalina的web server时，你可以不使用Host,
+ * 因为connector会使用web server的工具去决定哪个Context会被用来处理这个request
  * <p>
  * The parent Container attached to a Host is generally an Engine, but may
  * be some other implementation, or may be omitted if it is not necessary.

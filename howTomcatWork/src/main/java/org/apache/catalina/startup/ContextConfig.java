@@ -238,6 +238,7 @@ public final class ContextConfig
 
     /**
      * Process the application configuration file, if it exists.
+     * 处理application的配置文件，这里指web.xml
      */
     private void applicationConfig() {
 
@@ -253,8 +254,10 @@ public final class ContextConfig
         }
 
         // Process the application web.xml file
+        ///WEB-INF/web.xml
         synchronized (webDigester) {
             try {
+                //这个调用的方法隐含了Host必须存在的原因
                 URL url =
                     servletContext.getResource(Constants.ApplicationWebXml);
 

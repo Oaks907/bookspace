@@ -634,6 +634,7 @@ public class ApplicationContext
             String fullPath = context.getName() + path;
 
             // this is the problem. Host must not be null
+            //Host必须存在一个的原因。
             String hostName = context.getParent().getName();
 
             try {
