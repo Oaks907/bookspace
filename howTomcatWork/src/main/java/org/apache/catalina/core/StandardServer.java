@@ -306,6 +306,7 @@ public final class StandardServer
 
     /**
      * Has this component been started?
+     * 是否已经调用了start方法启动了所有的component。
      */
     private boolean started = false;
 

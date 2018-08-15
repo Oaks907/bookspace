@@ -72,6 +72,10 @@ import org.apache.catalina.deploy.NamingResources;
  * the servlet container as a whole.  A <code>Server</code> may contain
  * one or more <code>Services</code>, and the top level set of naming
  * resources.
+ * 一个Server元素代表整个Catalina服务容器。
+ * 它的元素代表了，所有servlet容器作为一个整体
+ * 一个Server可能会包含一个或者更多的Services，和顶级的resources资源
+ *
  * <p>
  * Normally, an implementation of this interface will also implement
  * <code>Lifecycle</code>, such that when the <code>start()</code> and
@@ -101,18 +105,22 @@ public interface Server {
      * Return descriptive information about this Server implementation and
      * the corresponding version number, in the format
      * <code>&lt;description&gt;/&lt;version&gt;</code>.
+     *
+     * 获取Server的information
      */
     public String getInfo();
 
 
     /**
      * Return the global naming resources.
+     * 返回全局naming resources
      */
     public NamingResources getGlobalNamingResources();
 
 
     /**
      * Set the global naming resources.
+     * 设置全局naming resources
      * 
      * @param namingResources The new global naming resources
      */
@@ -122,13 +130,14 @@ public interface Server {
 
     /**
      * Return the port number we listen to for shutdown commands.
+     * 返回监听shutdown命令的端口号
      */
     public int getPort();
 
 
     /**
      * Set the port number we listen to for shutdown commands.
-     *
+     * 设置监听shutdown命令的端口号
      * @param port The new port number
      */
     public void setPort(int port);
@@ -136,12 +145,14 @@ public interface Server {
 
     /**
      * Return the shutdown command string we are waiting for.
+     * 返回shutdown命令的string
      */
     public String getShutdown();
 
 
     /**
      * Set the shutdown command we are waiting for.
+     * 设置shutdown command的string
      *
      * @param shutdown The new shutdown command
      */
@@ -153,6 +164,7 @@ public interface Server {
 
     /**
      * Add a new Service to the set of defined Services.
+     * 添加一个新的service
      *
      * @param service The Service to be added
      */
@@ -161,6 +173,7 @@ public interface Server {
 
     /**
      * Wait until a proper shutdown command is received, then return.
+     * 阻塞，直到接收到shutdown命令，然后调用stop，停止所有组件
      */
     public void await();
 
@@ -168,6 +181,7 @@ public interface Server {
     /**
      * Return the specified Service (if it exists); otherwise return
      * <code>null</code>.
+     * 根据name返回指定的Service
      *
      * @param name Name of the Service to be returned
      */
@@ -176,6 +190,7 @@ public interface Server {
 
     /**
      * Return the set of Services defined within this Server.
+     * 返回Services的集合
      */
     public Service[] findServices();
 
@@ -183,6 +198,7 @@ public interface Server {
     /**
      * Remove the specified Service from the set associated from this
      * Server.
+     * 移除一个指定的Service
      *
      * @param service The Service to be removed
      */
