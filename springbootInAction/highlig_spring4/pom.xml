@@ -57,5 +57,17 @@
             <artifactId>commons-io</artifactId>
             <version>2.3</version>
         </dependency>
+
+        <!-- Spring test支持  -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <version>${spring-framework.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+        </dependency>
     </dependencies>
 </project>
