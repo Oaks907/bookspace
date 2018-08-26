@@ -1,0 +1,23 @@
+
+## Mysql: limit分页公式
+1. limit分页公式
+
+ * limit分页公式：curPage是当前第几页；pageSize是一页多少条记录
+limit (curPage-1)*pageSize,pageSize
+ * 用的地方：sql语句中
+```
+select * from student limit(curPage-1)*pageSize,pageSize;
+```
+
+2. 总页数公式
+* 总页数公式：totalRecord是总记录数；pageSize是一页分多少条记录
+
+```
+int totalPageNum = (totalRecord +pageSize - 1) / pageSize;
+```
+* 用的地方：前台UI分页插件显示分页码
+* 查询总条数：totalRecord是总记录数
+
+```
+SELECT COUNT(*) FROM tablename
+```
