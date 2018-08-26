@@ -11,18 +11,18 @@ import javax.servlet.ServletRegistration;
 /**
  * Create by haifei on 25/8/2018.
  */
-public class WebInitializer implements WebApplicationInitializer{
+public class WebInitializer implements WebApplicationInitializer {
 
 
   @Override
   public void onStartup(ServletContext servletContext) throws ServletException {
-    AnnotationConfigWebApplicationContext ctx = new AnnotationConfigWebApplicationContext();
-    ctx.register(MyMvcConfig.class);
-    ctx.setServletContext(servletContext);
+    AnnotationConfigWebApplicationContext context = new AnnotationConfigWebApplicationContext();
+    context.register(MyMvcConfig.class);
+    context.setServletContext(servletContext);//新建WebApplicationContext,注册配置类，并将其和当前servletContext关联
 
-    ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(ctx));
+    ServletRegistration.Dynamic servlet = servletContext.addServlet("dispatcher", new DispatcherServlet(context));
+    //注册Spring MVC的DispatcherServlet
     servlet.addMapping("/");
     servlet.setLoadOnStartup(1);
-    servlet.setAsyncSupported(true);
   }
 }
