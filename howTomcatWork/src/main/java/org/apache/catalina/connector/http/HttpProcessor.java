@@ -1005,7 +1005,7 @@ final class HttpProcessor
                 if (ok) {
                     //HttpProcessor接管Socket，由里面的Stream创建出request,response
                     //并解析请求头，为request中各个项赋值
-                    //调用Container继续处理Request，response
+                    //调用顶层的Container继续处理Request，response
                     connector.getContainer().invoke(request, response);
                 }
             } catch (ServletException e) {
