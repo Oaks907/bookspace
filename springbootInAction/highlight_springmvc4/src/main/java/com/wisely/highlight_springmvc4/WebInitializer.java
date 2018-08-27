@@ -24,5 +24,6 @@ public class WebInitializer implements WebApplicationInitializer {
     //注册Spring MVC的DispatcherServlet
     servlet.addMapping("/");
     servlet.setLoadOnStartup(1);
+    servlet.setAsyncSupported(true);
   }
 }
