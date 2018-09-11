@@ -129,6 +129,8 @@ final class StandardEngineValve
      * Select the appropriate child Host to process this request,
      * based on the requested server name.  If no matching Host can
      * be found, return an appropriate HTTP error.
+     * 基于Request的Server name选择合适的Host子容器来处理Request。
+     * 如果没有找到匹配的Host，返回Error
      *
      * @param request Request to be processed
      * @param response Response to be produced
@@ -148,6 +150,7 @@ final class StandardEngineValve
 
         // Validate that any HTTP/1.1 request included a host header
         HttpServletRequest hrequest = (HttpServletRequest) request;
+        //Request的protocol为 HTTP/1.1,且ServerName为null，返回400
         if ("HTTP/1.1".equals(hrequest.getProtocol()) &&
             (hrequest.getServerName() == null)) {
             ((HttpServletResponse) response.getResponse()).sendError
@@ -159,6 +162,7 @@ final class StandardEngineValve
 
         // Select the Host to be used for this Request
         StandardEngine engine = (StandardEngine) getContainer();
+        //选择Host
         Host host = (Host) engine.map(request, true);
         if (host == null) {
             ((HttpServletResponse) response.getResponse()).sendError
@@ -169,6 +173,7 @@ final class StandardEngineValve
         }
 
         // Ask this Host to process this request
+        //Host继续处理Request
         host.invoke(request, response);
 
     }

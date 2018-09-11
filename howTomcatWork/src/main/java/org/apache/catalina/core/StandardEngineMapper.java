@@ -179,6 +179,7 @@ public class StandardEngineMapper
         int debug = engine.getDebug();
 
         // Extract the requested server name
+        // 获取Request中的Server name(Host)，没有就设置为默认的Host name
         String server = request.getRequest().getServerName();
         if (server == null) {
             server = engine.getDefaultHost();
@@ -194,9 +195,11 @@ public class StandardEngineMapper
         // Find the matching child Host directly
         if (debug >= 2)
             engine.log(" Trying a direct match");
+        //根据主机名查找主机
         Host host = (Host) engine.findChild(server);
 
         // Find a matching Host by alias.  FIXME - Optimize this!
+        // 当直接通过server来查找Host的，可能不存在，这里再次比较Host的Aliase Name与Server Name比较
         if (host == null) {
             if (debug >= 2)
                 engine.log(" Trying an alias match");
@@ -215,6 +218,7 @@ public class StandardEngineMapper
         }
 
         // Trying the "default" host if any
+        //当上面都没有查找到时，这里使用Default Host来进行再一次查找
         if (host == null) {
             if (debug >= 2)
                 engine.log(" Trying the default host");

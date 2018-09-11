@@ -328,6 +328,7 @@ public class StandardContext
 
     /**
      * The request processing pause flag (while reloading occurs)
+     * 暂时停止接受请求标志位
      */
     private boolean paused = false;
 
@@ -406,6 +407,7 @@ public class StandardContext
     /**
      * Set flag to true to cause the system.out and system.err to be redirected
      * to the logger when executing a servlet.
+     * 在执行servlet时，将标志设置为true，使system.out与system.err输出到logger
      */
     private boolean swallowOutput = false;
 
@@ -2414,6 +2416,7 @@ public class StandardContext
         log(sm.getString("standardContext.reloadingStarted"));
 
         // Stop accepting requests temporarily
+        //暂时停止接受请求
         setPaused(true);
 
         // Binding thread

@@ -167,6 +167,7 @@ public abstract class ContainerBase
      * addChild can be called with the XML parser on the stack,
      * this allows the XML parser to have fewer privileges than
      * Tomcat.
+     * 使用该类的权限执行addChild。addChild可以与堆栈上的XML解析器一起调用，这允许XML解析器具有比Tomcat更少的特权。
      */
     protected class PrivilegedAddChild
         implements PrivilegedAction {
@@ -190,6 +191,7 @@ public abstract class ContainerBase
 
     /**
      * The child Containers belonging to this Container, keyed by name.
+     * 该Container的子容器，name是key值
      */
     protected HashMap children = new HashMap();
 
@@ -208,78 +210,92 @@ public abstract class ContainerBase
 
     /**
      * The container event listeners for this Container.
+     * 当前容器的事件监听器
      */
     protected ArrayList listeners = new ArrayList();
 
 
     /**
      * The Loader implementation with which this Container is associated.
+     * 与该容器绑定的Java类加载器
      */
     protected Loader loader = null;
 
 
     /**
      * The Logger implementation with which this Container is associated.
+     * 与该容器绑定的Logger日志记录器
      */
     protected Logger logger = null;
 
 
     /**
      * The Manager implementation with which this Container is associated.
+     * 与该容器绑定的Session管理器
      */
     protected Manager manager = null;
 
 
     /**
      * The cluster with which this Container is associated.
+     * 与该容器绑定的CLuster。
+     * Cluster作为本地主机的集群客户机/服务器工作。可以使用不同的集群实现来支持集群内通信的不同方式。
      */
     protected Cluster cluster = null;
 
 
     /**
      * The one and only Mapper associated with this Container, if any.
+     * 与该容器绑定的Mapper资源映射器。如果该值不为null，是不会由下面的mappers中取mapper的
      */
     protected Mapper mapper = null;
 
 
     /**
      * The set of Mappers associated with this Container, keyed by protocol.
+     * 与此容器相关联的映射器，key为protocol。
      */
     protected HashMap mappers = new HashMap();
 
 
     /**
      * The Java class name of the default Mapper class for this Container.
+     * 默认Mapper的Java Class Name
      */
     protected String mapperClass = null;
 
 
     /**
      * The human-readable name of this Container.
+     * 自定义的可读的容器的名字
      */
     protected String name = null;
 
 
     /**
      * The parent Container to which this Container is a child.
+     * 当前容器的父容器
      */
     protected Container parent = null;
 
 
     /**
      * The parent class loader to be configured when we install a Loader.
+     * 在安装加载器时要配置的父类加载器。
      */
     protected ClassLoader parentClassLoader = null;
 
 
     /**
      * The Pipeline object with which this Container is associated.
+     * 该容器关联的Pipeline
      */
     protected Pipeline pipeline = new StandardPipeline(this);
 
 
     /**
      * The Realm with which this Container is associated.
+     * 该容器关联的 Realm
      */
     protected Realm realm = null;
 
@@ -299,12 +315,14 @@ public abstract class ContainerBase
 
     /**
      * Has this component been started?
+     * 该部分是否started
      */
     protected boolean started = false;
 
 
     /**
      * The property change support for this component.
+     * 此组件的属性更改支持。
      */
     protected PropertyChangeSupport support = new PropertyChangeSupport(this);
 
@@ -814,6 +832,7 @@ public abstract class ContainerBase
                 throw new IllegalArgumentException("addChild:  Child name '" +
                                                    child.getName() +
                                                    "' is not unique");
+            //子容器设置父容器
             child.setParent((Container) this);  // May throw IAE
             if (started && (child instanceof Lifecycle)) {
                 try {
@@ -824,6 +843,7 @@ public abstract class ContainerBase
                         ("ContainerBase.addChild: start: " + e);
                 }
             }
+            //子容器一般可以设置多个，根据名字记录
             children.put(child.getName(), child);
             fireContainerEvent(ADD_CHILD_EVENT, child);
         }
@@ -847,6 +867,7 @@ public abstract class ContainerBase
 
     /**
      * Add the specified Mapper associated with this Container.
+     * 为当前的Container添加指定的Mapper
      *
      * @param mapper The corresponding Mapper implementation
      *
@@ -856,13 +877,16 @@ public abstract class ContainerBase
     public void addMapper(Mapper mapper) {
 
         synchronized(mappers) {
+            //如果该Mapper对应Protocol，已经存在另一个Mapper也是该Protocol，抛出异常
             if (mappers.get(mapper.getProtocol()) != null)
                 throw new IllegalArgumentException("addMapper:  Protocol '" +
                                                    mapper.getProtocol() +
                                                    "' is not unique");
+            //为该mapper关联Container
             mapper.setContainer((Container) this);      // May throw IAE
             if (started && (mapper instanceof Lifecycle)) {
                 try {
+                    // TODO: 29/8/2018 mapper启动问题
                     ((Lifecycle) mapper).start();
                 } catch (LifecycleException e) {
                     log("ContainerBase.addMapper: start: ", e);
@@ -871,6 +895,7 @@ public abstract class ContainerBase
                 }
             }
             mappers.put(mapper.getProtocol(), mapper);
+            //this.mapper代表默认添加的mapper，如果mappers中存在一个mapper，它就是默认的，如果添加多个，默认的mapper置为null
             if (mappers.size() == 1)
                 this.mapper = mapper;
             else
@@ -952,19 +977,20 @@ public abstract class ContainerBase
      */
     public Mapper findMapper(String protocol) {
 
+        //存在默认的Mapper取默认，不存在默认的，由与该Container管理的所有Mapper中取
         if (mapper != null)
             return (mapper);
         else
             synchronized (mappers) {
                 return ((Mapper) mappers.get(protocol));
             }
-
     }
 
 
     /**
      * Return the set of Mappers associated with this Container.  If this
      * Container has no Mappers, a zero-length array is returned.
+     * 返回与该Container关联的所有mapper
      */
     public Mapper[] findMappers() {
 
@@ -980,6 +1006,7 @@ public abstract class ContainerBase
      * Process the specified Request, to produce the corresponding Response,
      * by invoking the first Valve in our pipeline (if any), or the basic
      * Valve otherwise.
+     * 通过调用管道中的第一个阀门（如果有的话）或基本阀门，处理指定的请求，以产生相应的响应。
      *
      * @param request Request to be processed
      * @param response Response to be produced
@@ -1008,11 +1035,13 @@ public abstract class ContainerBase
     public Container map(Request request, boolean update) {
 
         // Select the Mapper we will use
+        // 根据Protocol选择合适的资源映射器
         Mapper mapper = findMapper(request.getRequest().getProtocol());
         if (mapper == null)
             return (null);
 
         // Use this Mapper to perform this mapping
+        // 通过该资源映射器选择合适的容器处理请求
         return (mapper.map(request, update));
 
     }
@@ -1069,6 +1098,7 @@ public abstract class ContainerBase
 
             if (mappers.get(mapper.getProtocol()) == null)
                 return;
+            //Protocol一致，就移除mappers中的Protocol一致的Mapper
             mappers.remove(mapper.getProtocol());
             if (started && (mapper instanceof Lifecycle)) {
                 try {
@@ -1082,6 +1112,7 @@ public abstract class ContainerBase
             if (mappers.size() != 1)
                 this.mapper = null;
             else {
+                //当mappers的数量为1时，赋值给默认的mapper
                 Iterator values = mappers.values().iterator();
                 this.mapper = (Mapper) values.next();
             }
@@ -1176,6 +1207,7 @@ public abstract class ContainerBase
             ((Lifecycle) resources).start();
 
         // Start our Mappers, if any
+        //启动所有Wrapper
         Mapper mappers[] = findMappers();
         for (int i = 0; i < mappers.length; i++) {
             if (mappers[i] instanceof Lifecycle)
@@ -1183,6 +1215,7 @@ public abstract class ContainerBase
         }
 
         // Start our child containers, if any
+        // 启动所有的子容器
         Container children[] = findChildren();
         for (int i = 0; i < children.length; i++) {
             if (children[i] instanceof Lifecycle)
@@ -1190,6 +1223,7 @@ public abstract class ContainerBase
         }
 
         // Start the Valves in our pipeline (including the basic), if any
+        // 启动所有转型为Lifecycle的pipeline中的Valve
         if (pipeline instanceof Lifecycle)
             ((Lifecycle) pipeline).start();
 
@@ -1359,7 +1393,8 @@ public abstract class ContainerBase
     /**
      * Add a default Mapper implementation if none have been configured
      * explicitly.
-     * 添加一个默认的Mapper，如果没有明确指明设置
+     * 添加一个默认的Mapper，如果没有明确指明设置。
+     * 默认的Mapper一定会被添加进mappers中，但是mappers可能不包含Mapper
      *
      * @param mapperClass Java class name of the default Mapper
      */
@@ -1368,6 +1403,7 @@ public abstract class ContainerBase
         // Do we need a default Mapper?
         if (mapperClass == null)
             return;
+        //之前设置了mapper，直接返回
         if (mappers.size() >= 1)
             return;
 

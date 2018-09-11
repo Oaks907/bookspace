@@ -75,7 +75,8 @@ import org.apache.catalina.cluster.ClusterSender;
  * and also supply "ClientApplications" with <code>ClusterSender</code>
  * used when sending information in the Cluster and
  * <code>ClusterInfo</code> used for receiving information in the Cluster.
- *
+ * Cluster作为本地主机的集群客户机/服务器工作
+ * 可以使用不同的集群实现来支持集群内通信的不同方式。
  * @author Bip Thelin
  * @version $Revision: 1.5 $, $Date: 2001/07/22 20:13:30 $
  */

@@ -150,6 +150,7 @@ final class StandardContextValve
         }
 
         // Disallow any direct access to resources under WEB-INF or META-INF
+        //禁止访问 WEB-INF or META-INF
         HttpServletRequest hreq = (HttpServletRequest) request.getRequest();
         String contextPath = hreq.getContextPath();
         String requestURI = ((HttpRequest) request).getDecodedRequestURI();

@@ -903,18 +903,19 @@ final class HttpProcessor
      * swallowed and dealt with.
      *
      * 处理被分配给该Processor的socket即将到来的HTTP request。
-     * 任何异常的出现豆浆被记录和处理
+     * 任何异常的出现都将被记录和处理
      *
      * @param socket The socket on which we are connected to the client
      */
     private void process(Socket socket) {
         boolean ok = true;   //处理过程是否正常
-        boolean finishResponse = true;
-        SocketInputStream input = null;
-        OutputStream output = null;
+        boolean finishResponse = true;   //是否完成Response
+        SocketInputStream input = null; //Socket的输入流,将会由这里面解析各种数据填充到Request与Response中
+        OutputStream output = null;     //Socket的输出流,完成Response之后，写入缓冲区的数据会由Socket发送到client
 
         // Construct and initialize the objects we will need
         try {
+            //通过Socket获取输入流SocketInputStream
             input = new SocketInputStream(socket.getInputStream(),
                                           connector.getBufferSize());
         } catch (Exception e) {
@@ -946,11 +947,14 @@ final class HttpProcessor
             try {
                 if (ok) {
 
-                    //由Socket记录到记录Server Port与 Inet参数
+                    //由Socket记录到记录Server Port与 Inet参数与Socket到request中
                     parseConnection(socket);
+                    //解析请求行，同时设置各种参数到Request与Response中
                     parseRequest(input, output);
                     if (!request.getRequest().getProtocol()
                         .startsWith("HTTP/0"))
+
+                        //解析请求头，同时设置各种解析的数据到Request与Response中国年
                         parseHeaders(input);
                     //如果是Http/1.1,发送ACK确认帧
                     if (http11) {
@@ -1003,6 +1007,7 @@ final class HttpProcessor
                 ((HttpServletResponse) response).setHeader
                     ("Date", FastHttpDateFormat.getCurrentDate());
                 if (ok) {
+                    //交接给顶层Container处理
                     //HttpProcessor接管Socket，由里面的Stream创建出request,response
                     //并解析请求头，为request中各个项赋值
                     //调用顶层的Container继续处理Request，response
@@ -1033,7 +1038,8 @@ final class HttpProcessor
             // Finish up the handling of the request
             if (finishResponse) {
                 try {
-                    //关闭输出流等相关操作
+                    //关闭输出流等相关操作,会通过flush方法将缓存区的数据强制发送出去，而不用等到缓存区完全填满
+                    //这里也是Socket完成response请求，返回给客户端的地方
                     response.finishResponse();
                 } catch (IOException e) {
                     ok = false;
@@ -1042,6 +1048,7 @@ final class HttpProcessor
                     ok = false;
                 }
                 try {
+                    //清空request
                     request.finishRequest();
                 } catch (IOException e) {
                     ok = false;

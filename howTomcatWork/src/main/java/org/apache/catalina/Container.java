@@ -13,13 +13,18 @@ import javax.naming.directory.DirContext;
  * optionally support a pipeline of Valves that process the request in an
  * order configured at runtime, by implementing the <b>Pipeline</b> interface
  * as well.
+ * Container是一个能够执行处理来自于Client的request的各种request的对象。
+ * 通过实现Pipeline接口，Container可以🉑️可选的以在运行时配置的顺序，支持管道(pipeline)的阀(valves)顺序处理请求
  * <p>
  * Containers will exist at several conceptual levels within Catalina.  The
  * following examples represent common cases:
+ * Containers在Catalina中以几种不同的等级概念存在
  * <ul>
  * <li><b>Engine</b> - Representation of the entire Catalina servlet engine,
  *     most likely containing one or more subcontainers that are either Host
  *     or Context implementations, or other custom groups.
+ * Engine: 代表整个Catalina Servlet
+ *
  * <li><b>Host</b> - Representation of a virtual host containing a number
  *     of Contexts.
  * <li><b>Context</b> - Representation of a single ServletContext, which will
@@ -35,23 +40,32 @@ import javax.naming.directory.DirContext;
  * application is relatively small.  Therefore, Container implementations
  * need to be designed so that they will operate correctly in the absence
  * of parent Containers in a given deployment.
+ * 一个部署的Catalina不需要包含所有等级的Container。
+ *
  * <p>
  * A Container may also be associated with a number of support components
  * that provide functionality which might be shared (by attaching it to a
  * parent Container) or individually customized.  The following support
  * components are currently recognized:
+ * 容器还可以与许多支持组件相关联，这些支持组件提供可以共享（通过将其附加到父容器）或单独定制的功能。
  * <ul>
  * <li><b>Loader</b> - Class loader to use for integrating new Java classes
  *     for this Container into the JVM in which Catalina is running.
+ *     类装入程序，用于将这个容器的新Java类集成到Calalina运行的JVM中。
  * <li><b>Logger</b> - Implementation of the <code>log()</code> method
  *     signatures of the <code>ServletContext</code> interface.
+ *     实现ServletContext接口的log()方法
  * <li><b>Manager</b> - Manager for the pool of Sessions associated with
  *     this Container.
+ *     管理与Container关联的Session池
  * <li><b>Realm</b> - Read-only interface to a security domain, for
  *     authenticating user identities and their corresponding roles.
+ *      只读到安全域的接口，用于验证用户标识及其对应的角色。
  * <li><b>Resources</b> - JNDI directory context enabling access to static
  *     resources, enabling custom linkages to existing server components when
  *     Catalina is embedded in a larger server.
+ *     Java naming and directory interface Java
+ *     JNDI目录上下文允许访问静态资源，当Catalina嵌入到更大的服务器中时，允许自定义链接到现有服务器组件。
  * </ul>
  *
  * @author Craig R. McClanahan

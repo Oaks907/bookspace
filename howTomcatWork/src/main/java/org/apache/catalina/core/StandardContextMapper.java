@@ -185,12 +185,12 @@ public final class StandardContextMapper
         int debug = context.getDebug();
 
         // Has this request already been mapped?
+
         if (update && (request.getWrapper() != null))
             return (request.getWrapper());
 
         // Identify the context-relative URI to be mapped
-        String contextPath =
-            ((HttpServletRequest) request.getRequest()).getContextPath();
+        String contextPath = ((HttpServletRequest) request.getRequest()).getContextPath();
         String requestURI = ((HttpRequest) request).getDecodedRequestURI();
         String relativeURI = requestURI.substring(contextPath.length());
 
@@ -199,6 +199,7 @@ public final class StandardContextMapper
             context.log("Mapping contextPath='" + contextPath +
                         "' with requestURI='" + requestURI +
                         "' and relativeURI='" + relativeURI + "'");
+        //Mapping contextPath='/app1' with requestURI='/app1/ModernServlet' and relativeURI='/ModernServlet'
 
         // Apply the standard request URI mapping rules from the specification
         Wrapper wrapper = null;
@@ -207,6 +208,7 @@ public final class StandardContextMapper
         String name = null;
 
         // Rule 1 -- Exact Match
+        // 精确匹配,找到对应的Wrapper，即Servelt
         if (wrapper == null) {
             if (debug >= 2)
                 context.log("  Trying exact match");
@@ -221,6 +223,7 @@ public final class StandardContextMapper
         }
 
         // Rule 2 -- Prefix Match
+        //前缀匹配
         if (wrapper == null) {
             if (debug >= 2)
                 context.log("  Trying prefix match");
@@ -243,6 +246,7 @@ public final class StandardContextMapper
         }
 
         // Rule 3 -- Extension Match
+        //后缀名匹配
         if (wrapper == null) {
             if (debug >= 2)
                 context.log("  Trying extension match");
@@ -264,6 +268,7 @@ public final class StandardContextMapper
         }
 
         // Rule 4 -- Default Match
+        //默认匹配
         if (wrapper == null) {
             if (debug >= 2)
                 context.log("  Trying default match");
@@ -277,6 +282,7 @@ public final class StandardContextMapper
         }
 
         // Update the Request (if requested) and return this Wrapper
+        // Mapped to servlet 'Modern' with servlet path '/ModernServlet' and path info 'null' and update=true
         if ((debug >= 1) && (wrapper != null))
             context.log(" Mapped to servlet '" + wrapper.getName() +
                         "' with servlet path '" + servletPath +

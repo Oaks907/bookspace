@@ -97,8 +97,8 @@ public class StandardEngine
     public StandardEngine() {
 
         super();
+        //将当前容器的标准实现阀加入到pipeline中
         pipeline.setBasic(new StandardEngineValve());
-
     }
 
 
@@ -108,6 +108,7 @@ public class StandardEngine
     /**
      * Host name to use when no server host, or an unknown host,
      * is specified in the request.
+     * 当请求中没有指定服务器主机或未知主机时，要提供服务的默认主机名。
      */
     private String defaultHost = null;
 
