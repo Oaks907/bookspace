@@ -1,0 +1,3 @@
+;---------loader与kernel-----------
+LOADER_BASE_ADDR  	equ 0x900
+LOADER_SATART_SECTOR 	equ 0x2
