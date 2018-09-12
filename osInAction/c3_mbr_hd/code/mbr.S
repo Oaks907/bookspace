@@ -4,7 +4,7 @@
 SECTION MBR vstart=0x7c00
 	mov ax,cs
 	mov ds,ax
-	mov ex,ax
+	mov es,ax
 	mov ss,ax
 	mov fs,ax
 	mov sp,0x7c00
@@ -119,7 +119,7 @@ out dx, al
 	in ax, dx
 	mov [bx], ax
 	add bx, 2
-	loop .go_on_read
+	loop .go_on_ready
 	ret
 
 times 510-($-$$) db 0
