@@ -208,6 +208,7 @@ final class ApplicationFilterChain implements FilterChain {
                 filter = filterConfig.getFilter();
                 support.fireInstanceEvent(InstanceEvent.BEFORE_FILTER_EVENT,
                                           filter, request, response);
+                //调用过滤方法
                 filter.doFilter(request, response, this);
                 support.fireInstanceEvent(InstanceEvent.AFTER_FILTER_EVENT,
                                           filter, request, response);

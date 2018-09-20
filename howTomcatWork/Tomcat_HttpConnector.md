@@ -187,9 +187,6 @@ private void threadStart() {
     }
     
 void recycle(HttpProcessor processor) {
-
-        //        if (debug >= 2)
-        //            log("recycle: Recycling processor " + processor);
         processors.push(processor);
 
     }

@@ -716,12 +716,14 @@ public final class StandardWrapper
     public void deallocate(Servlet servlet) throws ServletException {
 
         // If not SingleThreadModel, no action is required
+        //如果不是STM，就直接返回
         if (!singleThreadModel) {
             countAllocated--;
             return;
         }
 
         // Unlock and free this instance
+        // 如果是STM，就放入到实例池中，以备后来使用
         synchronized (instancePool) {
             countAllocated--;
             instancePool.push(servlet);
@@ -935,6 +937,7 @@ System.out.println("after calling setWrapper");
                     HttpResponseBase res = new HttpResponseBase();
                     req.setServletPath(jspFile);
                     req.setQueryString("jsp_precompile=true");
+                    //调用Servlet的service方法
                     servlet.service(req, res);
                 }
                 instanceSupport.fireInstanceEvent(InstanceEvent.AFTER_INIT_EVENT,
