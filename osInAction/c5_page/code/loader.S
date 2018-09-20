@@ -1,7 +1,7 @@
 %include "boot.inc"
 section loader vstart=LOADER_BASE_ADDR
 LOADER_STACK_TOP 	equ	LOADER_BASE_ADDR
-
+jmp loader_start
 ;构建gdt及其内部的描述符
 GDT_BASE:	dd	0x00000000
 		dd	0x00000000
@@ -64,14 +64,14 @@ mov di, ards_buf	;ards结构缓冲区
 	cmp edx, eax		;冒泡排序，找出最大,edx寄存器始终是最大的内存容量
 	jge .next_ards
 	mov edx, eax		;edx为总内存大小
-.next_ards
+.next_ards:
 	loop .find_max_mem_area
 	jmp .mem_get_ok
 
 ;------  int 15h ax = E801h 获取内存大小,最大支持4G  ------
 ; 返回后, ax cx 值一样,以KB为单位,bx dx值一样,以64KB为单位
 ; 在ax和cx寄存器中为低16M,在bx和dx寄存器中为16MB到4G。
-.e820_failed_so_try_e801
+.e820_failed_so_try_e801:
 	mov ax, 0xe801
 	int 0x15		;每执行一次0x15,eax,ebx,ecx都会更新
 	jc .e801_failed_so_try88	;CF=1? ;若当前e801方法失败,就尝试0x88方法
@@ -109,7 +109,7 @@ mov di, ards_buf	;ards结构缓冲区
 	or edx, eax		;把积的低16位组合到edx,为32位的积
 	and edx, 0x100000	;0x88子功能只会返回1MB以上的内存,故实际内存大小要加上1MB
 
-.mem_get_ok
+.mem_get_ok:
 	mov [total_mem_bytes], edx	;;将内存换为byte单位后存入total_mem_bytes处。
 	
 
@@ -119,7 +119,7 @@ mov di, ards_buf	;ards结构缓冲区
 ;3 将cr0的pe位置1
 
 ;-----------------  打开A20  ----------------
-int al, 0x92
+in al, 0x92
 or al, 0000_0010B
 out 0x92, al
 
@@ -189,7 +189,7 @@ setup_page:
 	loop .clear_page_dir
 
 ;开始创建页目录项(PDE)
-.create_pde	;;创建Page Directory Entry
+.create_pde:	;;创建Page Directory Entry
 	mov eax, PAGE_DIR_TABLE_POS	
 	add eax, 0x1000		;此时eax为第一个页表的位置及属性
 	mov ebx, eax		;此处为ebx赋值，是为.create_pte做准备，ebx为基址
