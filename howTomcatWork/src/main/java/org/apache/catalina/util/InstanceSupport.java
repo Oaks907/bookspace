@@ -173,7 +173,6 @@ public final class InstanceSupport {
         }
         for (int i = 0; i < interested.length; i++)
             interested[i].instanceEvent(event);
-
     }
 
 

@@ -180,6 +180,8 @@ public final class StandardWrapper
     /**
      * The load-on-startup order value (negative value means load on
      * first call) for this servlet.
+     *
+     * 启动顺序，负值代表第一次加载
      */
     private int loadOnStartup = -1;
 
@@ -838,17 +840,17 @@ public final class StandardWrapper
             // 检查请求的servlet是不是一个JSP界面。若是，loadServlet()方法需要获取代表该JSP页面的实际Servlet类
             String actualClass = servletClass;
             if ((actualClass == null) && (jspFile != null)) {
-                Wrapper jspWrapper = (Wrapper)
-                    ((Context) getParent()).findChild(Constants.JSP_SERVLET_NAME);
-                if (jspWrapper != null)
-                    actualClass = jspWrapper.getServletClass();
+                //由于Catalina也是一个JSP界面，因此必须检查请求是否是不是一个JSP界面。若是loadServlet方法需要该JSP界面的实际的servlet类。
+                Wrapper jspWrapper = (Wrapper) ((Context) getParent()).findChild(Constants.JSP_SERVLET_NAME);
+                if (jspWrapper != null) {
+                  actualClass = jspWrapper.getServletClass();
+                }
             }
 
-            // Complain if no servlet class has been specified
+            // actualClass没有指定
             if (actualClass == null) {
                 unavailable(null);
-                throw new ServletException
-                    (sm.getString("standardWrapper.notClass", getName()));
+                throw new ServletException(sm.getString("standardWrapper.notClass", getName()));
             }
 
             // Acquire an instance of the class loader to be used
@@ -856,21 +858,21 @@ public final class StandardWrapper
             Loader loader = getLoader();
             if (loader == null) {
                 unavailable(null);
-                throw new ServletException
-                    (sm.getString("standardWrapper.missingLoader", getName()));
+                throw new ServletException(sm.getString("standardWrapper.missingLoader", getName()));
             }
 
+            //获取类加载器
             ClassLoader classLoader = loader.getClassLoader();
 
             // Special case class loader for a container provided servlet
             // Catalina提供了一些用于访问servlet容器内部数据的专用servlet。如果是，就可以访问catalina的内部数据
             if (isContainerProvidedServlet(actualClass)) {
                 classLoader = this.getClass().getClassLoader();
-                log(sm.getString
-                      ("standardWrapper.containerServlet", getName()));
+                log(sm.getString("standardWrapper.containerServlet", getName()));
             }
 
             // Load the specified servlet class from the appropriate class loader
+            //加载指定的 servlet class
             Class classClass = null;
             try {
                 if (classLoader != null) {
@@ -882,33 +884,30 @@ public final class StandardWrapper
                 }
             } catch (ClassNotFoundException e) {
                 unavailable(null);
-                throw new ServletException
-                    (sm.getString("standardWrapper.missingClass", actualClass),
-                     e);
+                throw new ServletException(sm.getString("standardWrapper.missingClass", actualClass), e);
             }
             if (classClass == null) {
                 unavailable(null);
-                throw new ServletException
-                    (sm.getString("standardWrapper.missingClass", actualClass));
+                throw new ServletException(sm.getString("standardWrapper.missingClass", actualClass));
             }
 
             // Instantiate and initialize an instance of the servlet class itself
+           //实例化并初始化servlet类本身的实例
             try {
                 servlet = (Servlet) classClass.newInstance();
             } catch (ClassCastException e) {
                 unavailable(null);
                 // Restore the context ClassLoader
-                throw new ServletException
-                    (sm.getString("standardWrapper.notServlet", actualClass), e);
+                throw new ServletException(sm.getString("standardWrapper.notServlet", actualClass), e);
             } catch (Throwable e) {
                 unavailable(null);
                 // Restore the context ClassLoader
-                throw new ServletException
-                    (sm.getString("standardWrapper.instantiate", actualClass), e);
+                throw new ServletException(sm.getString("standardWrapper.instantiate", actualClass), e);
             }
 
             // Check if loading the servlet in this web application should be
             // allowed
+           //检查是否允许在这个Web应用程序中加载servlet
             if (!isServletAllowed(servlet)) {
                 throw new SecurityException
                     (sm.getString("standardWrapper.privilegedServlet",
@@ -927,10 +926,12 @@ System.out.println("after calling setWrapper");
 
             // Call the initialization method of this servlet
             try {
-                instanceSupport.fireInstanceEvent(InstanceEvent.BEFORE_INIT_EVENT,
-                                                  servlet);
+                instanceSupport.fireInstanceEvent(InstanceEvent.BEFORE_INIT_EVENT, servlet);
+
+                //使用
                 servlet.init(facade);
                 // Invoke jspInit on JSP pages
+                // 对于JSP特殊处理
                 if ((loadOnStartup > 0) && (jspFile != null)) {
                     // Invoking jspInit
                     HttpRequestBase req = new HttpRequestBase();
@@ -963,6 +964,7 @@ System.out.println("after calling setWrapper");
             }
 
             // Register our newly initialized instance
+            //如果servlet是STM，初始化instancePoo
             singleThreadModel = servlet instanceof SingleThreadModel;
             if (singleThreadModel) {
                 if (instancePool == null)
@@ -1087,6 +1089,7 @@ System.out.println("after calling setWrapper");
 
         // Loaf a while if the current instance is allocated
         // (possibly more than once if non-STM)
+        // 如果当前实例已经被分配，这里暂停一下
         if (countAllocated > 0) {
             int nRetries = 0;
             while (nRetries < 10) {
@@ -1107,10 +1110,12 @@ System.out.println("after calling setWrapper");
             Thread.currentThread().getContextClassLoader();
         ClassLoader classLoader = instance.getClass().getClassLoader();
 
+        //日志处理
         PrintStream out = System.out;
         SystemLogHandler.startCapture();
 
         // Call the servlet destroy() method
+        //调用servlet的destroy方法
         try {
             instanceSupport.fireInstanceEvent
               (InstanceEvent.BEFORE_DESTROY_EVENT, instance);
@@ -1131,8 +1136,10 @@ System.out.println("after calling setWrapper");
                  t);
         } finally {
             // restore the context ClassLoader
+          // 存储context的classLoader
             Thread.currentThread().setContextClassLoader(oldCtxClassLoader);
             // Write captured output
+           // 写入捕获的输出
             String log = SystemLogHandler.stopCapture();
             if (log != null && log.length() > 0) {
                 if (getServletContext() != null) {
@@ -1146,9 +1153,11 @@ System.out.println("after calling setWrapper");
         // Deregister the destroyed instance
         instance = null;
 
+        // 如果该Servlet是STM类型的，并且实例池不为null
         if (singleThreadModel && (instancePool != null)) {
             try {
                 Thread.currentThread().setContextClassLoader(classLoader);
+                //所有instance出stack
                 while (!instancePool.isEmpty()) {
                     ((Servlet) instancePool.pop()).destroy();
                 }

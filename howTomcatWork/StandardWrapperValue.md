@@ -405,7 +405,7 @@ private void internalDoFilter(ServletRequest request, ServletResponse response)
                 servlet.service((HttpServletRequest) request,
                                 (HttpServletResponse) response);
             } else {
-                //如果存在Filter，会再次调用service方法处理request
+                //如果存在Filter，调用service方法处理request
                 servlet.service(request, response);
             }
             support.fireInstanceEvent(InstanceEvent.AFTER_SERVICE_EVENT,
@@ -416,7 +416,7 @@ private void internalDoFilter(ServletRequest request, ServletResponse response)
 ```
 上面方法就只做了两件事：
 1. 调用每一个Filter的doFilter方法
-2. 在调用每一个Filter完成之后，再次调用service方法处理request。这里已经调用Service方法两次了。通过StanderWrapper获取Servlet的时候，完成Servlet加载之后，就已经调用了一次Service方法。
+2. 在调用每一个Filter完成之后，调用service方法处理request。
 
 doFilter的之后的逻辑，没有看，就不说了。
 

@@ -816,6 +816,7 @@ public abstract class ContainerBase
      *  child Containers
      */
     public void addChild(Container child) {
+        //是否设置了安全管理器
         if (System.getSecurityManager() != null) {
             PrivilegedAction dp =
                 new PrivilegedAddChild(child);
@@ -1143,9 +1144,7 @@ public abstract class ContainerBase
      * @param listener The listener to add
      */
     public void addLifecycleListener(LifecycleListener listener) {
-
         lifecycle.addLifecycleListener(listener);
-
     }
 
 
