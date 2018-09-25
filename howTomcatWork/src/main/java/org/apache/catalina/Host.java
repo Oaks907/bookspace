@@ -104,6 +104,7 @@ public interface Host extends Container {
      * The ContainerEvent event type sent when a new alias is added
      * by <code>addAlias()</code>.
      */
+    //Alias事件类型
     public static final String ADD_ALIAS_EVENT = "addAlias";
 
 
@@ -121,6 +122,7 @@ public interface Host extends Container {
      * Return the application root for this Host.  This can be an absolute
      * pathname, a relative pathname, or a URL.
      */
+    //返回此主机的应用程序根目录。这可以是绝对路径名、相对路径名或URL。
     public String getAppBase();
 
 
@@ -130,22 +132,25 @@ public interface Host extends Container {
      *
      * @param appBase The new application root
      */
+    //设置此主机的应用程序根目录。这可以是绝对路径名、相对路径名或URL。
     public void setAppBase(String appBase);
 
 
     /**
-     * Return the value of the auto deploy flag.  If true, it indicates that 
-     * this host's child webapps should be discovred and automatically 
+     * Return the value of the auto deploy flag.  If true, it indicates that
+     * this host's child webapps should be discovred and automatically
      * deployed.
      */
+    //返回AutoDebug部署标志的值。如果为真，则表明该主机的子WebApp应该被发现并自动部署。
     public boolean getAutoDeploy();
 
 
     /**
      * Set the auto deploy flag value for this host.
-     * 
+     *
      * @param autoDeploy The new auto deploy flag
      */
+    //
     public void setAutoDeploy(boolean autoDeploy);
 
 
@@ -155,6 +160,7 @@ public interface Host extends Container {
      *
      * @param defaultContext The new DefaultContext
      */
+    //添加默认的Context
     public void addDefaultContext(DefaultContext defaultContext);
 
 
@@ -168,6 +174,7 @@ public interface Host extends Container {
      * Return the canonical, fully qualified, name of the virtual host
      * this Container represents.
      */
+    //返回此容器表示的虚拟主机的规范、完全限定名。
     public String getName();
 
 
@@ -214,6 +221,7 @@ public interface Host extends Container {
      *
      * @param uri Request URI to be mapped
      */
+    //返回用于处理指定Host请求URI的Context
     public Context map(String uri);
 
 
@@ -222,6 +230,7 @@ public interface Host extends Container {
      *
      * @param alias Alias name to be removed
      */
+    //Host的alias name
     public void removeAlias(String alias);
 
 

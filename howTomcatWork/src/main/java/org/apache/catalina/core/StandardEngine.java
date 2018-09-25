@@ -298,7 +298,6 @@ public class StandardEngine
             throw new IllegalArgumentException
                 (sm.getString("standardEngine.notHost"));
         super.addChild(child);
-
     }
 
 
