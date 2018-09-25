@@ -181,7 +181,6 @@ public final class StandardContextMapper
      */
     public Container map(Request request, boolean update) {
 
-
         int debug = context.getDebug();
 
         // Has this request already been mapped?

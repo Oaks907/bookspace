@@ -88,8 +88,7 @@ import org.apache.catalina.valves.ValveBase;
  * @version $Revision: 1.7 $ $Date: 2001/11/10 01:24:20 $
  */
 
-final class StandardEngineValve
-    extends ValveBase {
+final class StandardEngineValve extends ValveBase {
 
 
     // ----------------------------------------------------- Instance Variables

@@ -161,6 +161,7 @@ public class ErrorDispatcherValve
         throws IOException, ServletException {
 
         // Perform the request
+        // 通过ValveContext先调用下一个Valve
         context.invokeNext(request, response);
 
         response.setSuspended(false);
@@ -209,7 +210,8 @@ public class ErrorDispatcherValve
         Context context = request.getContext();
         if (context == null)
             return;
-        
+
+        //异常信息
         Throwable realError = throwable;
         
         if (realError instanceof ServletException) {
@@ -221,26 +223,26 @@ public class ErrorDispatcherValve
             
         ErrorPage errorPage = findErrorPage(context, realError);
 
+        //当找到errorPage时，设置Request与Response的各种参数
         if (errorPage != null) {
             response.setAppCommitted(false);
+
             ServletRequest sreq = request.getRequest();
             ServletResponse sresp = response.getResponse();
-            sreq.setAttribute
-                (Globals.STATUS_CODE_ATTR,
-                 new Integer(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
-            sreq.setAttribute(Globals.ERROR_MESSAGE_ATTR,
-                              throwable.getMessage());
-            sreq.setAttribute(Globals.EXCEPTION_ATTR,
-                              realError);
+            sreq.setAttribute(Globals.STATUS_CODE_ATTR, new Integer(HttpServletResponse.SC_INTERNAL_SERVER_ERROR));
+            sreq.setAttribute(Globals.ERROR_MESSAGE_ATTR, throwable.getMessage());
+            sreq.setAttribute(Globals.EXCEPTION_ATTR, realError);
             Wrapper wrapper = request.getWrapper();
+
             if (wrapper != null)
-                sreq.setAttribute(Globals.SERVLET_NAME_ATTR,
-                                  wrapper.getName());
+                sreq.setAttribute(Globals.SERVLET_NAME_ATTR, wrapper.getName());
+
             if (sreq instanceof HttpServletRequest)
-                sreq.setAttribute(Globals.EXCEPTION_PAGE_ATTR,
-                                  ((HttpServletRequest) sreq).getRequestURI());
-            sreq.setAttribute(Globals.EXCEPTION_TYPE_ATTR,
-                              realError.getClass());
+                sreq.setAttribute(Globals.EXCEPTION_PAGE_ATTR, ((HttpServletRequest) sreq).getRequestURI());
+
+            sreq.setAttribute(Globals.EXCEPTION_TYPE_ATTR, realError.getClass());
+
+            //通过重定向处理http code与exception，里面包含errorpage对象
             if (custom(request, response, errorPage)) {
                 try {
                     sresp.flushBuffer();
@@ -322,6 +324,7 @@ public class ErrorDispatcherValve
 
         if (exception == null)
             return (null);
+        //获取的异常的Class，通过class的name去查找errorPage。
         Class clazz = exception.getClass();
         String name = clazz.getName();
         while (!"java.lang.Object".equals(clazz)) {
@@ -350,8 +353,7 @@ public class ErrorDispatcherValve
      * @param response The response being generated
      * @param errorPage The errorPage directive we are obeying
      */
-    protected boolean custom(Request request, Response response,
-                             ErrorPage errorPage) {
+    protected boolean custom(Request request, Response response, ErrorPage errorPage) {
 
         if (debug >= 1)
             log("Processing " + errorPage);
@@ -369,22 +371,22 @@ public class ErrorDispatcherValve
                 log("Not processing an HTTP response --> default handling");
             return (false);     // NOTE - Nothing we can do generically
         }
-        HttpServletResponse hres =
-            (HttpServletResponse) response.getResponse();
+        HttpServletResponse hres = (HttpServletResponse) response.getResponse();
 
         try {
 
             // Reset the response if possible (else IllegalStateException)
+            //resset response
             hres.reset();
 
             // Forward control to the specified location
-            ServletContext servletContext =
-                request.getContext().getServletContext();
-            RequestDispatcher rd =
-                servletContext.getRequestDispatcher(errorPage.getLocation());
+            //重定向到指定位置
+            ServletContext servletContext = request.getContext().getServletContext();
+            RequestDispatcher rd = servletContext.getRequestDispatcher(errorPage.getLocation());
             rd.forward(hreq, hres);
 
             // If we forward, the response is suspended again
+            //如果我们重定向，响应再次暂停
             response.setSuspended(false);
 
             // Indicate that we have successfully processed this custom page

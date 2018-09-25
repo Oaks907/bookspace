@@ -111,6 +111,7 @@ public class StandardHost
 
     /**
      * The set of aliases for this Host.
+     * Host的各种别名
      */
     private String[] aliases = new String[0];
 
@@ -612,7 +613,7 @@ public class StandardHost
         // Match on the longest possible context path prefix
         if (debug > 1)
             log("  Trying the longest context path prefix");
-        Context context = null;
+        Context context = null;//  /app1/a/b/c--> /app1/a/b --> /app1/a
         String mapuri = uri;
         while (true) {
             context = (Context) findChild(mapuri);

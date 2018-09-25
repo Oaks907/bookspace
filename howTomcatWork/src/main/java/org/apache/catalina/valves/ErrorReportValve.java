@@ -167,6 +167,8 @@ public class ErrorReportValve
             (Throwable) sreq.getAttribute(Globals.EXCEPTION_ATTR);
 
         ServletResponse sresp = (ServletResponse) response;
+        //Returns a boolean indicating if the response has been committed. A committed response has already had its
+        //status code and headers written.
         if (sresp.isCommitted()) {
             return;
         }
@@ -230,9 +232,11 @@ public class ErrorReportValve
         throws IOException {
 
         // Do nothing on non-HTTP responses
+        //不是HttpResponse直接返回
         if (!(response instanceof HttpResponse))
             return;
         HttpResponse hresponse = (HttpResponse) response;
+        //不是HttpServletResponse直接返回
         if (!(response instanceof HttpServletResponse))
             return;
         HttpServletResponse hres = (HttpServletResponse) response;

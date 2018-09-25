@@ -583,8 +583,7 @@ public class StandardPipeline
     // ------------------------------- StandardPipelineValveContext Inner Class
 
 
-    protected class StandardPipelineValveContext
-        implements ValveContext {
+    protected class StandardPipelineValveContext implements ValveContext {
 
 
         // ------------------------------------------------- Instance Variables
@@ -637,6 +636,7 @@ public class StandardPipeline
 
             // Invoke the requested Valve for the current request thread
             if (subscript < valves.length) {
+
                 valves[subscript].invoke(request, response, this);
             } else if ((subscript == valves.length) && (basic != null)) {
                 basic.invoke(request, response, this);

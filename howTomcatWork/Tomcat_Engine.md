@@ -1,6 +1,8 @@
 [TOC]
 
-## Engine
+
+
+## Engine接口
 
 * Engine是Tomcat的servlet引擎。当部署Tomcat要支持多个虚拟主机时，就需要使用Engine容器。
 * Engine接收到Connector转交过来的请求时，会选择一个Host，将Request传递给子容器。
@@ -110,7 +112,7 @@ public void importDefaultContext(Context context) {
         }
     }
 ```
-StandardDefaultContext中的mportDefaultContext(Context context) 方法：
+StandardDefaultContext中的importDefaultContext(Context context) 方法：
 ```java
 public void importDefaultContext(Context context) {
 
@@ -181,4 +183,58 @@ public void importDefaultContext(Context context) {
         }
 
     }
+```
+
+## StandardContextValve
+```java
+final class StandardEngineValve extends ValveBase {
+    // ----------------------------------------------------- Instance Variables
+    private static final String info = "org.apache.catalina.core.StandardEngineValve/1.0";
+    private static final StringManager sm =
+        StringManager.getManager(Constants.Package);
+    // ------------------------------------------------------------- Properties
+    public String getInfo() {
+        return (info);
+    }
+    // --------------------------------------------------------- Public Methods
+    /**
+     * 基于Request的Server name选择合适的Host子容器来处理Request。
+     * 如果没有找到匹配的Host，返回Error
+     */
+    public void invoke(Request request, Response response,
+                       ValveContext valveContext)
+        throws IOException, ServletException {
+        //检查request与response的类型
+        if (!(request.getRequest() instanceof HttpServletRequest) ||
+            !(response.getResponse() instanceof HttpServletResponse)) {
+            return;     
+        }
+
+        HttpServletRequest hrequest = (HttpServletRequest) request;
+        //Request的protocol为 HTTP/1.1,且ServerName为null，返回400
+        if ("HTTP/1.1".equals(hrequest.getProtocol()) &&
+            (hrequest.getServerName() == null)) {
+            ((HttpServletResponse) response.getResponse()).sendError
+                (HttpServletResponse.SC_BAD_REQUEST,
+                 sm.getString("standardEngine.noHostHeader",
+                              request.getRequest().getServerName()));
+            return;
+        }
+        // Select the Host to be used for this Request
+        StandardEngine engine = (StandardEngine) getContainer();
+        //调用Engine的map方法选择Host
+        Host host = (Host) engine.map(request, true);
+        if (host == null) {
+            ((HttpServletResponse) response.getResponse()).sendError
+                (HttpServletResponse.SC_BAD_REQUEST,
+                 sm.getString("standardEngine.noHost",
+                              request.getRequest().getServerName()));
+            return;
+        }
+        //Host继续处理Request
+        host.invoke(request, response);
+    }
+
+}
+
 ```

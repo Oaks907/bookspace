@@ -114,6 +114,7 @@ public interface Deployer  {
     /**
      * Return the name of the Container with which this Deployer is associated.
      */
+    // Deployer关联的容器的Name
     public String getName();
 
 
@@ -141,6 +142,7 @@ public interface Deployer  {
      * @exception IOException if an input/output error was encountered
      *  during installation
      */
+    //安装一个新的web应用。这个应用的文件必须在指定的URL。
     public void install(String contextPath, URL war) throws IOException;
 
 
