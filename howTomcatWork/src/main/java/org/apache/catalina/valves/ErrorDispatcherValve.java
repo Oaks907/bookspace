@@ -205,8 +205,7 @@ public class ErrorDispatcherValve
      * @param exception The exception that occurred (which possibly wraps
      *  a root cause exception
      */
-    protected void throwable(Request request, Response response,
-                             Throwable throwable) {
+    protected void throwable(Request request, Response response, Throwable throwable) {
         Context context = request.getContext();
         if (context == null)
             return;
@@ -328,6 +327,7 @@ public class ErrorDispatcherValve
         Class clazz = exception.getClass();
         String name = clazz.getName();
         while (!"java.lang.Object".equals(clazz)) {
+            //通过Context获取到指定的ErrorPage
             ErrorPage errorPage = context.findErrorPage(name);
             if (errorPage != null)
                 return (errorPage);
@@ -337,7 +337,6 @@ public class ErrorDispatcherValve
             name = clazz.getName();
         }
         return (null);
-
     }
 
 

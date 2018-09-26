@@ -363,6 +363,7 @@ public class ErrorReportValve
             }
 
         } catch (IOException e) {
+
             ;
         } catch (IllegalStateException e) {
             ;

@@ -263,8 +263,6 @@ public void stop(String contextPath) throws IOException {
     }
 ```
 
-
-
 参考：
 1. 《深入剖析Tomcat》
 2. [详解Tomcat 配置文件server.xml](https://www.cnblogs.com/kismetv/p/7228274.html)
