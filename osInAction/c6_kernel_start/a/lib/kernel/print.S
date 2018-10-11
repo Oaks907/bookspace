@@ -63,7 +63,7 @@ put_char:
 	mov [gs:bx], cl		; ascii字符本身
 	inc bx
 	mov byte [gs:bx], 0x07	; 字符属性
-	shr bx 1		; 恢复老的光标值
+	shr bx, 1		; 恢复老的光标值
 	inc bx			; 下一个光标值
 	cmp bx, 2000		
 	jl .set_cursor		; 若光标值小于2000,表示未写到显存的最后,则去设置新的光标值
