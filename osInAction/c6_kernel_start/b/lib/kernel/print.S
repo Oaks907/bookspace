@@ -85,7 +85,7 @@ put_char:
 	jmp .set_cursor
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-.put_other
+.put_other:
 	shl bx, 1		; 光标位置是用2字节表示,将光标值乘2,表示对应显存中的偏移字节
 	mov [gs:bx], cl		; ascii字符本身
 	inc bx
