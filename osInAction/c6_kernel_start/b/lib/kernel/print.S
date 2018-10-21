@@ -2,7 +2,7 @@ TI_GDT	equ	0
 RPL0	equ 	0
 SELECTOR_VIDEO 	equ	(0x0003<<3) + TI_GDT + RPL0
 
-[bits32]
+[bits 32]
 section .text
 ;--------------------------------------------
 ;put_str 通过put_char来打印以0字符结尾的字符串
@@ -17,7 +17,7 @@ put_str:
 	push ecx
 	xor  ecx, ecx		; 准备用ecx存储参数,清空
 	mov ebx, [esp + 12]	; 从栈中得到待打印的字符串地址
-.goon
+.goon:
 	mov cl, [ebx]
 	cmp cl, 0		; 如果处理到了字符串尾,跳到结束处返回
 	jz .str_over
@@ -26,7 +26,7 @@ put_str:
 	add esp, 4		; 回收参数所占的栈空间
 	inc ebx			; 使ebx指向下一个字符
 	jmp .goon
-.str_over
+.str_over:
 	pop ecx
 	pop ebx
 	ret
@@ -36,7 +36,7 @@ put_str:
 ;-----------------------------------------------------------------
 global put_char
 put_char:
-	putad			;备份32位寄存器环境
+	pushad			;备份32位寄存器环境
 				;需要保证gs中为正确的视频段选择子,为保险起见,每次打印时都为gs赋值
 	mov ax, SELECTOR_VIDEO	;不能直接把立即数送入段寄存器
 	mov gs, ax
@@ -115,9 +115,9 @@ put_char:
 .roll_screen:			;若超出屏幕大小，开始滚屏
 	cld			;清楚方向位
 	mov ecx, 960		;一共有2000-80=1920个字符要搬运,共1920*2=3840字节.一次搬4字节,共3840/4=960次
-	mov esi, 0xb80a4	;第1行行首
+	mov esi, 0xb80a0	;第1行行首
 	mov edi, 0xb8000	;第0行行首
-	rep movsb		;开始循环复制
+	rep movsd		;开始循环复制
 
 ;;;;;;;将最后一行填充为空白
 	mov ebx, 3840		;最后一行首字符的第一个字节偏移= 1920 * 2
