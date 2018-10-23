@@ -4,6 +4,6 @@
 
 /*负责初始化所有模块 */
 void init_all() {
-	push_str("init_all\n");
+	put_str("init_all\n");
 	idt_init();	//初始化中断
 }
