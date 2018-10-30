@@ -158,6 +158,8 @@ public class StandardContext
     /**
      * The set of application listener class names configured for this
      * application, in the order they were encountered in the web.xml file.
+     * 配置在web.xml中的Listener
+     * 监听器Listener就是在application,session,request三个对象创建、销毁或者往其中添加修改删除属性时自动执行代码的功能组件。
      */
     private String applicationListeners[] = new String[0];
 
@@ -165,12 +167,14 @@ public class StandardContext
     /**
      * The set of instantiated application listener objects, in a one-to-one
      * correspondence to the class names in <code>applicationListeners</code>.
+     * 实例化的Listener对象，与上面的application Listeners维持一对一的关系
      */
     private Object applicationListenersObjects[] = new Object[0];
 
 
     /**
      * The set of application parameters defined for this application.
+     * 应用的参数集合
      */
     private ApplicationParameter applicationParameters[] =
         new ApplicationParameter[0];
@@ -185,6 +189,7 @@ public class StandardContext
 
     /**
      * The Locale to character set mapper for this application.
+     * 此应用的字符集映射器
      */
     private CharsetMapper charsetMapper = null;
 

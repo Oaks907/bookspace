@@ -245,7 +245,7 @@ public final class StandardContextMapper
         }
 
         // Rule 3 -- Extension Match
-        //后缀名匹配
+        //扩展名匹配 *. 开头的处理
         if (wrapper == null) {
             if (debug >= 2)
                 context.log("  Trying extension match");
