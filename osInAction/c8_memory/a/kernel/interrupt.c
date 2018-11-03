@@ -131,7 +131,7 @@ enum intr_status intr_enable() {
 /* 关中断,并且返回关中断前的状态 */
 enum intr_status intr_disable() {
 	enum intr_status old_status;
-	if (INTR_ON == intr_get_satus()) {
+	if (INTR_ON == intr_get_status()) {
 		old_status = INTR_ON;
 		asm volatile("cli": : : "memory");	//关中断,cli指令将IF位置0
 		return old_status;
@@ -150,7 +150,7 @@ enum intr_status intr_set_status(enum intr_status status) {
 enum intr_status intr_get_status() {
 	uint32_t eflags = 0;
 	GET_EFLAGES(eflags);
-	return (EFLAGS_IF & elfags) ? INTR_ON : INTR_OFF;
+	return (EFLAGS_IF & eflags) ? INTR_ON : INTR_OFF;
 }
 
 /*完成有关中断的所有初始化工作*/

@@ -38,12 +38,13 @@ static inline uint8_t inb(uint16_t port) {
 	return data;
 }
 
+
 /* 将从端口port读入的word_cnt个字写入addr */
-static inline uint8_t insw(uint16_t port, void* addr, uint32_t word_cnt) {
+static inline void insw(uint16_t port, void* addr, uint32_t word_cnt) {
 /******************************************************
-    insw是将从端口port处读入的16位内容写入es:edi指向的内存,
-    我们在设置段描述符时, 已经将ds,
-   此时不用担心数据错乱。*/
-	asm volatile ("cld; rep insw" : "+D" (addr), "+c" (word_cnt) : "d" (port) : "memory");	
+ *     insw是将从端口port处读入的16位内容写入es:edi指向的内存,
+ *         我们在设置段描述符时, 已经将ds,
+ *            此时不用担心数据错乱。*/
+	asm volatile ("cld; rep insw" : "+D" (addr), "+c" (word_cnt) : "d" (port) : "memory");
 }
 #endif

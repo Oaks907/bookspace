@@ -1,5 +1,5 @@
 #ifndef __KERNEL_DEBUG_H
-#ifndef __KERNEL_DEBUG_H
+#define __KERNEL_DEBUG_H
 void panic_spin(char* filename, int line, const char* func, const char* condition);
 
 /***************************  __VA_ARGS__  *******************************

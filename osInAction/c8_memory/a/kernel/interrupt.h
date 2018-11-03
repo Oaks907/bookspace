@@ -9,8 +9,8 @@ void idt_init(void);
  * INTR_ON值为1,表示开中断 */
 enum intr_status {	//中断状态
 	INTR_OFF,	//中断关闭
-	INTR_ON;	//中断打开
-}
+	INTR_ON		//中断打开
+};
 
 enum intr_status intr_get_status(void);
 enum intr_status intr_set_status(enum intr_status);
