@@ -33,6 +33,20 @@ $(BUILD_DIR)/debug.o: kernel/debug.c kernel/debug.h \
         lib/kernel/print.h lib/stdint.h kernel/interrupt.h
 	$(CC) $(CFLAGS) $< -o $@
 
+$(BUILD_DIR)/string.o: lib/string.c lib/string.h kernel/gobal.h \
+	lib/stdint.h kernel/debug.h
+	$(CC) $(CFLAGS) $< -o $@
+	
+$(BUILD_DIR)/bitmap.o: lib/kernel/bitmap.c lib/kernel/bitmap.h \
+	kernel/global.h lib/stdint.h lib/string.h lib/stdint.h \
+	lib/kernel/print.h kernel/interrupt.h kernel/debug.h
+	$(CC) $(CFLAGS) $< -o $@	
+
+$(BUILD_DIR)/memory.o: kernel/memory.c kernel/memory.h lib/stdint.h lib/kernel/bitmap.h \
+	kernel/global.h kernel/global.h kernel/debug.h lib/kernel/print.h \
+	lib/kernel/io.h kernel/interrupt.h lib/string.h lib/stdint.h
+	$(CC) $(CFLAGS) $< -o $@
+
 ##############    汇编代码编译    ###############
 $(BUILD_DIR)/kernel.o: kernel/kernel.S
 	$(AS) $(ASFLAGS) $< -o $@
