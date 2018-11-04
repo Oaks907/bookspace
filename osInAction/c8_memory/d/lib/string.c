@@ -71,7 +71,7 @@ char* strchr(const char* str, const uint8_t ch){
 		}
 		str++;
 	}
-	return NULL:
+	return NULL;
 }
 
 /* 从后往前查找字符串str中首次出现字符ch的地址(不是下标,是地址) */
@@ -94,7 +94,7 @@ char* strcat(char* dst_, const char* src_){
 	char* str = dst_;
 	while(*str++);
 	--str;		//别看错了，--str是独立的一句，并不是while的循环体
-	while((*str++ = *stc_++));	//当*str被赋值为0时,此时表达式不成立,正好添加了字符串结尾的0.
+	while((*str++ = *src_++));	//当*str被赋值为0时,此时表达式不成立,正好添加了字符串结尾的0.
 	return dst_;
 }
 

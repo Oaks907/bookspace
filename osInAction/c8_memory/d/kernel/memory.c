@@ -16,10 +16,10 @@
 
 /* 内存池结构,生成两个实例用于管理内核内存池和用户内存池 */
 struct pool {
-	struct bitmap bool_bitmap;	//本内存池用到的位图结构,用于管理物理内存
+	struct bitmap pool_bitmap;	//本内存池用到的位图结构,用于管理物理内存
 	uint32_t phy_addr_start;	//本内存池所管理物理内存的起始地址
 	uint32_t pool_size;		//本内存池字节容量
-}
+};
 
 struct pool kernel_pool, user_pool;	//生成内核内存池和用户内存池
 struct virtual_addr kernel_vaddr;	//此结构是用来给内核分配虚拟地址
