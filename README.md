@@ -4,5 +4,5 @@
 * [<<操作系统真相还原>>](https://github.com/Oaks907/bookspace/tree/master/osInAction)
 * [<<SpringBoot 实战>>](https://github.com/Oaks907/bookspace/tree/master/springbootInAction)
 * [<<深入剖析Tomcat>>](https://github.com/Oaks907/bookspace/tree/master/howTomcatWork)
-* [<<剑🈯Offer>>](https://github.com/Oaks907/bookspace/tree/master/SwordOffer)
+* [<<剑指Offer>>](https://github.com/Oaks907/bookspace/tree/master/SwordOffer)
 * [LeetCode](https://github.com/Oaks907/bookspace/tree/master/LeetCode)
