@@ -8,6 +8,11 @@ import java.util.Stack;
 /**
  * Create by haifei on 27/11/2018 11:15 PM.
  * Given an n-ary tree, return the postorder traversal of its nodes' values.
+ * 多叉树的后序遍历。
+ *
+ * 递归解法显而易见
+ *
+ * 使用Stack的解法需要牢牢记着。能用递归的一定存在其他解法
  */
 public class S590_postorder {
 
