@@ -146,10 +146,13 @@ public class ReentrantLock implements Lock, java.io.Serializable {
         }
 
         protected final boolean tryRelease(int releases) {
+            //剩余持有锁的数量
             int c = getState() - releases;
             if (Thread.currentThread() != getExclusiveOwnerThread())
                 throw new IllegalMonitorStateException();
+            //完全释放锁
             boolean free = false;
+            // 其实就是重入的问题，如果c==0，也就是说没有嵌套锁了，可以释放了，否则还不能释放掉
             if (c == 0) {
                 free = true;
                 setExclusiveOwnerThread(null);
@@ -220,6 +223,7 @@ public class ReentrantLock implements Lock, java.io.Serializable {
     static final class FairSync extends Sync {
         private static final long serialVersionUID = -3000897897090466540L;
 
+        //争抢锁
         final void lock() {
             acquire(1);
         }
@@ -228,16 +232,26 @@ public class ReentrantLock implements Lock, java.io.Serializable {
          * Fair version of tryAcquire.  Don't grant access unless
          * recursive call or no waiters or is first.
          */
+        // 尝试直接获取锁，返回值是boolean，代表是否获取到锁
+        // 返回true：1.没有线程在等待锁；2.重入锁，线程本来就持有锁，也就可以理所当然可以直接获取
         protected final boolean tryAcquire(int acquires) {
             final Thread current = Thread.currentThread();
             int c = getState();
+            //  state == 0 此时此刻没有线程持有锁
             if (c == 0) {
+                // 虽然此时此刻锁是可以用的，但是这是公平锁，既然是公平，就得讲究先来后到，
+                // 看看有没有别人在队列中等了半天了
                 if (!hasQueuedPredecessors() &&
+                  // 如果没有线程在等待，那就用CAS尝试一下，成功了就获取到锁了，
+                  // 不成功的话，只能说明一个问题，就在刚刚几乎同一时刻有个线程抢先了 =_=
+                  // 因为刚刚还没人的，我判断过了???
                     compareAndSetState(0, acquires)) {
+                    // 到这里就是获取到锁了，标记一下，告诉大家，现在是我占用了锁
                     setExclusiveOwnerThread(current);
                     return true;
                 }
             }
+            //如果是当前线程持有锁
             else if (current == getExclusiveOwnerThread()) {
                 int nextc = c + acquires;
                 if (nextc < 0)

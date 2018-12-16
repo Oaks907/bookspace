@@ -1036,6 +1036,8 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
             //数组为null或者长度为0,进行初始化
             if (tab == null || (n = tab.length) == 0)
                 tab = initTable();//初始化数组
+            //根据键的 hash 值找到哈希数组相应的索引位置
+            //如果为空，那么以CAS无锁式向该位置添加一个节点
             else if ((f = tabAt(tab, i = (n - 1) & hash)) == null) {    //数组已经初始化，且定位的桶，不存在hash冲突
                 //使用unsafe进行安全的替换，CAS无锁式添加
                 if (casTabAt(tab, i, null,
@@ -2489,6 +2491,8 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                     advance = false;
                 }
             }
+            //每个新参加进来扩容的线程必然先进 while 循环的最后一个判断条件中去领取自己需要迁移的桶的区间。
+            // 然后 i 指向区间的最后一个位置，表示迁移操作从后往前的做。
             if (i < 0 || i >= n || i + n >= nextn) {
                 int sc;
                 //所有的迁移工作已完成
@@ -2505,6 +2509,9 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                 // 这里使用 CAS 操作对 sizeCtl 进行减 1，代表做完了属于自己的任务
                 if (U.compareAndSwapInt(this, SIZECTL, sc = sizeCtl, sc - 1)) {
                     // 任务结束，方法退出
+                    //(resizeStamp(n) << RESIZE_STAMP_SHIFT) + 2 表示当前只有一个线程正在工作，相对应的，如果 (sc - 2)
+                    // == resizeStamp(n) << RESIZE_STAMP_SHIFT，说明当前线程就是最后一个还在扩容的线程，那么会将 finishing
+                    // 标识为 true，并在下一次循环中退出扩容方法。
                     if ((sc - 2) != resizeStamp(n) << RESIZE_STAMP_SHIFT)
                         return;
                     // 到这里，说明 (sc - 2) == resizeStamp(n) << RESIZE_STAMP_SHIFT，
@@ -2513,6 +2520,7 @@ public class ConcurrentHashMap<K,V> extends AbstractMap<K,V>
                     i = n; // recheck before commit
                 }
             }// 如果位置 i 处是空的，没有任何节点，那么放入刚刚初始化的 ForwardingNode ”空节点“
+            //待迁移桶为空，那么在此位置 CAS 添加 ForwardingNode 结点标识该桶已经被处理过了
             else if ((f = tabAt(tab, i)) == null)
                 advance = casTabAt(tab, i, null, fwd);
             // 该位置处是一个 ForwardingNode，代表该位置已经迁移过了

@@ -198,6 +198,8 @@ public class CyclicBarrier {
     private int dowait(boolean timed, long nanos)
         throws InterruptedException, BrokenBarrierException,
                TimeoutException {
+        // 先要获取到锁，然后在 finally 中要记得释放锁
+        // 如果记得 Condition 部分的话，我们知道 condition 的 await 会释放锁，signal 的时候需要重新获取锁
         final ReentrantLock lock = this.lock;
         lock.lock();
         try {
@@ -206,30 +208,40 @@ public class CyclicBarrier {
             if (g.broken)
                 throw new BrokenBarrierException();
 
+            //如果程序中断,打断栏栅唤醒所有线程，抛出中断异常
             if (Thread.interrupted()) {
                 breakBarrier();
                 throw new InterruptedException();
             }
-
+            // index 是这个 await 方法的返回值
+            // 注意到这里，这个是从 count 递减后得到的值
             int index = --count;
+            // 如果等于 0，说明所有的线程都到栅栏上了，准备通过
             if (index == 0) {  // tripped
                 boolean ranAction = false;
                 try {
+                    // 如果在初始化的时候，指定了通过栅栏前需要执行的操作，在这里会得到执行
                     final Runnable command = barrierCommand;
                     if (command != null)
                         command.run();
                     ranAction = true;
+                    // 唤醒等待的线程，然后开启新的一代
                     nextGeneration();
                     return 0;
                 } finally {
+                    // 进到这里，说明执行指定操作的时候，发生了异常，那么需要打破栅栏
+                    // 之前我们说了，打破栅栏意味着唤醒所有等待的线程，设置 broken 为 true，重置 count 为 parties
                     if (!ranAction)
                         breakBarrier();
                 }
             }
 
             // loop until tripped, broken, interrupted, or timed out
+            // 如果是最后一个线程调用 await，那么上面就返回了
+            // 下面的操作是给那些不是最后一个到达栅栏的线程执行的
             for (;;) {
                 try {
+                    // 如果带有超时机制，调用带超时的 Condition 的 await 方法等待，直到最后一个线程调用 await
                     if (!timed)
                         trip.await();
                     else if (nanos > 0L)

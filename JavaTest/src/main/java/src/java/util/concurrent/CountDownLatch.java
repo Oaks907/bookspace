@@ -175,6 +175,7 @@ public class CountDownLatch {
 
         protected boolean tryReleaseShared(int releases) {
             // Decrement count; signal when transition to zero
+            //自旋的方式实现state减一
             for (;;) {
                 int c = getState();
                 if (c == 0)
