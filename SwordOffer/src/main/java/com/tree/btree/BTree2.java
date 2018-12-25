@@ -429,6 +429,7 @@ public class BTree2<K, V> {
       childNode.removeEntry(i);
     }
 
+    // -- 处理 Node 下面挂载的其他 Node --
     // 如果满子节点不是叶节点，则还需要处理其子节点
     if (!childNode.isLeaf()) {
       //将满子节点中索引为[t, 2t - 1]的t个子节点插入新的节点中
@@ -639,7 +640,7 @@ public class BTree2<K, V> {
        * 因为这是查找失败的情况，0 <= result.getIndex() <= node.size()，
        * 因此(result.getIndex() + 1)会溢出。
        */
-      if (node.isLeaf()) {// 如果关键字不在节点node中，并且是叶节点，则什么都不做，因为该关键字不在该B树中
+      if (node.isLeaf()) {   // 如果关键字不在节点node中，并且是叶节点，则什么都不做，因为该关键字不在该B树中
         System.out.println("The key:" + key + " isn't in this BTree.");
         return null;
       }
@@ -678,13 +679,14 @@ public class BTree2<K, V> {
         // childNode：子节点
         //3.a 有一个相邻兄弟节点至少包含t个项
         if (null != siblingNode) {
-          //左兄弟节点满足条件
+          //左兄弟节点满足条件。将父节点索引位置的节点添加到子节点的首位，将左兄弟节点的最后一个关键字或者右兄弟节点的第一个关键字添加到父索引位置。
+          //循环删除子节点。这样做的原因是为了，防止当前子节点删除完成后，不满足Math.ceil(m) - 1的要求
           if (siblingIndex < index) {
             //将当前节点的Entry合并到当前的索引对应的子节点
             childNode.insertEntry(node.entryAt(siblingIndex), 0);
-            //删除左兄弟节点Entry
+            //父节点删除左兄弟节点Entry
             node.removeEntry(siblingIndex);
-            //提取左子树的最后一个 Entry, 添加到父节点的Index处
+            //提取左兄弟子树的最后一个 Entry, 添加到父节点的Index处
             node.insertEntry(siblingNode.entryAt(siblingNode.size() - 1), siblingIndex);
             siblingNode.removeEntry(siblingIndex - 1);
 
@@ -707,7 +709,7 @@ public class BTree2<K, V> {
 
           return delete(childNode, key);
         } else {  // 3.b 如果其相邻左右节点都包含t-1个项
-          //父节点移动到子节点。右兄弟节点移动到子节点
+          //父节点移动到子节点。右兄弟所有节点移动到子节点
           if (index < node.size()) {  // 存在右兄弟，直接在后面追加
             BTreeNode<K, V> rightSiblingNode = node.childAt(index + 1);
             childNode.addEntry(node.entryAt(index));
@@ -751,31 +753,26 @@ public class BTree2<K, V> {
   /**
    * 一个简单的层次遍历B树实现，用于输出B树。
    */
-  public void output()
-  {
+  public void output() {
     Queue<BTreeNode<K, V>> queue = new LinkedList<BTreeNode<K, V>>();
     queue.offer(root);
-    while(!queue.isEmpty())
-    {
+    while (!queue.isEmpty()) {
       BTreeNode<K, V> node = queue.poll();
-      for(int i = 0; i < node.size(); ++ i)
+      for (int i = 0; i < node.size(); ++i)
         System.out.print(node.entryAt(i) + " ");
       System.out.println();
-      if(!node.isLeaf())
-      {
-        for(int i = 0; i <= node.size(); ++ i)
+      if (!node.isLeaf()) {
+        for (int i = 0; i <= node.size(); ++i)
           queue.offer(node.childAt(i));
       }
     }
   }
 
-  public static void main(String[] args)
-  {
+  public static void main(String[] args) {
     Random random = new Random();
     BTree2<Integer, Integer> btree = new BTree2<Integer, Integer>(3);
     List<Integer> save = new ArrayList<Integer>();
-    for(int i = 0; i < 10; ++ i)
-    {
+    for (int i = 0; i < 10; ++i) {
       int r = random.nextInt(100);
       save.add(r);
       System.out.println(r);
