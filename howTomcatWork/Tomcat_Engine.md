@@ -185,7 +185,7 @@ public void importDefaultContext(Context context) {
     }
 ```
 
-## StandardContextValve
+## StandardEngineValve
 ```java
 final class StandardEngineValve extends ValveBase {
     // ----------------------------------------------------- Instance Variables

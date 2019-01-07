@@ -251,6 +251,7 @@ public void stop() throws LifecycleException {
 
   1. 调用ServerSocket的accept()方法监听address地址的port端口。同时设置超时时间与TcpNoDelay
   2. `HttpConnector`实现了`Thread`的run方法。在run方法中开启使用 
+
     `socket = serverSocket.accept();`监听端口到来的请求。
   3. 当存在新的请求的时候, 通过 `createProcessor()`方法，创建一个HttpProcessor。HttpProcessor是HttpConnector移交request的下一个选手，每个request会对应一个HttpProcessor
   4. createProcessor方法保证了创建的Processor个数不会超过设置的参数：minProcessors与maxProcessors
@@ -430,7 +431,7 @@ public HttpProcessor(HttpConnector connector, int id) {
     }
 ```
 
-#####HttpProcessor的参数解释：
+##### HttpProcessor的参数解释：
 
 ```java
 private boolean available = false;					//是否存在可用的新Socket
