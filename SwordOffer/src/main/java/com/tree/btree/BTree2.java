@@ -732,8 +732,8 @@ public class BTree2<K, V> {
             for (int i = leftSiblingNode.size() - 1; i >= 0; i--) {
               childNode.insertEntry(leftSiblingNode.entryAt(i), 0);
               if (!leftSiblingNode.isLeaf()) {
-                for (int j = leftSiblingNode.size(); j >= 0; j++) {
-                  childNode.insertChild(leftSiblingNode.childAt(i), 0);
+                for (int j = leftSiblingNode.size(); j >= 0; j--) {
+                  childNode.insertChild(leftSiblingNode.childAt(j), 0);
                 }
               }
             }
