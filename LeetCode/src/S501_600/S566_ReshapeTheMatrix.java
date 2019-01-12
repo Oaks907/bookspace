@@ -1,6 +1,6 @@
 package S501_600;
 
-import utils.Utils;
+import utils.PrintUtils;
 
 /**
  * Create by haifei on 24/1/2018.
@@ -31,6 +31,6 @@ public class S566_ReshapeTheMatrix {
 
   public static void main(String[] args) {
     int[][] nums = {{1, 2}, {3, 4}};
-    Utils.printArray(matrixReshape(nums, 1, 4)); //1, 2, 3, 4,
+    PrintUtils.printArray(matrixReshape(nums, 1, 4)); //1, 2, 3, 4,
   }
 }

@@ -3,7 +3,7 @@ package utils;
 /**
  * Create by haifei on 24/1/2018.
  */
-public class Utils {
+public class PrintUtils {
 
   private static final int MAXIMUM_CAPACITY = 10000;
 
@@ -19,6 +19,14 @@ public class Utils {
   public static void printArray(int[] nums) {
     for (int i = 0; i < nums.length; i++) {
         System.out.print(nums[i] + ", ");
+    }
+    System.out.println();
+  }
+
+  public static void printLinkedList(ListNode head) {
+    while (head!= null) {
+      System.out.print(head.val + " ");
+      head = head.next;
     }
     System.out.println();
   }

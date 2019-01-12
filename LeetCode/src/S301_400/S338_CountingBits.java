@@ -1,8 +1,6 @@
 package S301_400;
 
-import utils.Utils;
-
-import javax.rmi.CORBA.Util;
+import utils.PrintUtils;
 
 /**
  * Create by haifei on 30/11/2018 9:14 PM.
@@ -47,8 +45,8 @@ public class S338_CountingBits {
 
     final S338_CountingBits countingBits = new S338_CountingBits();
 
-    Utils.printArray(countingBits.countBits(8));
-    Utils.printArray(countingBits.countBits2(8));
+    PrintUtils.printArray(countingBits.countBits(8));
+    PrintUtils.printArray(countingBits.countBits2(8));
 
 //    for (int i = 0; i < 10; i++) {
 //      Utils.printArray(countingBits.countBits(i));
