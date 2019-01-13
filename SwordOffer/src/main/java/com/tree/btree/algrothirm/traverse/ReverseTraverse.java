@@ -2,6 +2,9 @@ package com.tree.btree.algrothirm.traverse;
 
 import com.haifei.model.TreeNode;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Stack;
 
 /**
@@ -31,6 +34,38 @@ public class ReverseTraverse {
     }
   }
 
+
+
+  public void postTraverse(TreeNode root) {
+    if (root == null) {
+      return;
+    }
+
+    List<Integer> list = new ArrayList<>();
+    Stack<TreeNode> stack = new Stack<>();
+    stack.push(root);
+
+    while (!stack.isEmpty()) {
+
+      final TreeNode pop = stack.pop();
+      list.add(pop.val);
+
+      if (pop.left != null) {
+        stack.push(pop.left);
+      }
+
+      if (pop.right != null) {
+        stack.push(pop.right);
+      }
+    }
+
+    Collections.reverse(list);
+
+    for (int i : list) {
+      System.out.print(i + " ");
+    }
+  }
+
   public static void main(String[] args) {
 
     TreeNode node1 = new TreeNode(1);
@@ -54,5 +89,8 @@ public class ReverseTraverse {
     System.out.println();
     System.out.println("非递归方式_2:");
 //    preTraverse.preTraverse_Two(node1);
+
+    System.out.println("Stack方式：");
+    reverseTraverse.postTraverse(node1);
   }
 }
