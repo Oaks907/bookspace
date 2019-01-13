@@ -14,7 +14,17 @@ public class S018_4Sum {
 
     Arrays.sort(nums);
     for (int i = 0; i < nums.length - 3; i++) {
-      for (int j = i + 1; j < nums.length - 2; j++){
+
+      if (i > 0 && nums[i] == nums[i - 1]) {
+        continue;
+      }
+
+      for (int j = i + 1; j < nums.length - 2; j++) {
+
+        if (j > i + 1 && nums[j] == nums[j - 1]) {
+          continue;
+        }
+
         int left = j + 1;
         int right = nums.length - 1;
         while (left < right) {
@@ -26,15 +36,17 @@ public class S018_4Sum {
             list.add(nums[left]);
             list.add(nums[right]);
             result.add(list);
-          } else if (value < target) {
-            while (left < right && nums[left] == nums[left + 1]){
+            while (left < right && nums[left] == nums[left + 1]) {
               left++;
             }
             left++;
-          } else if (value > target) {
             while (left < right && nums[right] == nums[right - 1]) {
               right--;
             }
+            right--;
+          } else if (value < target) {
+            left++;
+          } else if (value > target) {
             right--;
           }
         }
@@ -45,6 +57,9 @@ public class S018_4Sum {
 
   public static void main(String[] args) {
     int[] nums = {1, 0, -1, 0, -2, 2};
+    System.out.println(fourSum(nums, 0));
+
+    nums = new int[]{-3, -2, -1, 0, 0, 1, 2, 3};
     System.out.println(fourSum(nums, 0));
   }
 }
