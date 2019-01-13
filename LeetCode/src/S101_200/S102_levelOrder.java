@@ -1,6 +1,9 @@
 package S101_200;
 
+import com.sun.javafx.sg.prism.NGNode;
+import org.w3c.dom.Node;
 import org.w3c.dom.ls.LSException;
+import utils.PrintUtils;
 import utils.TreeNode;
 
 import javax.swing.*;
@@ -44,6 +47,53 @@ public class S102_levelOrder {
     return result;
   }
 
+  /**
+   * 使用深度优先完成这个
+   *
+   * @param root
+   * @return
+   */
+  public List<List<Integer>> levelOrder_DFS(TreeNode root) {
+
+    List<List<Integer>> result = new ArrayList<>();
+
+    if (root == null) {
+      return result;
+    }
+
+    int depth = findDepth(root);
+
+    int[][] arr = new int[depth][(int) Math.pow(2, depth - 1)];
+
+    DFS(root, 0, 0, arr);
+
+    PrintUtils.printArray(arr);
+
+    return result;
+  }
+
+  private int findDepth(TreeNode head) {
+    if (null == head) {
+      return 0;
+    }
+    int left = findDepth(head.left);
+    int right = findDepth(head.right);
+
+    return Math.max(left, right) + 1;
+  }
+
+  private void DFS(TreeNode node, int depth, int col, int[][] arr) {
+    if (null == node) {
+      return;
+    }
+
+    arr[depth][col] = node.val;
+
+    depth++;
+    DFS(node.left, depth, col, arr);
+    DFS(node.right, depth, col + 1, arr);
+  }
+
   public static void main(String[] args) {
     TreeNode head = new TreeNode(8);
     TreeNode val6 = new TreeNode(6);
@@ -62,5 +112,7 @@ public class S102_levelOrder {
 
     S102_levelOrder levelOrder = new S102_levelOrder();
     levelOrder.levelOrder(head);
+
+    levelOrder.levelOrder_DFS(head);
   }
 }
