@@ -1,5 +1,7 @@
 package utils;
 
+import javafx.beans.binding.ObjectExpression;
+
 /**
  * Create by haifei on 24/1/2018.
  */
@@ -11,6 +13,15 @@ public class PrintUtils {
     for (int i = 0; i < nums.length; i++) {
       for (int j = 0; j < nums[0].length; j++) {
         System.out.print(nums[i][j] + ", ");
+      }
+      System.out.println();
+    }
+  }
+
+  public static void printCharArray(char[][] arr) {
+    for (int i = 0; i < arr.length; i++) {
+      for (int j = 0; j < arr[0].length; j++) {
+        System.out.print(arr[i][j] + ", ");
       }
       System.out.println();
     }

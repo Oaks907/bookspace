@@ -1,7 +1,5 @@
 package S001_100;
 
-import com.sun.org.apache.regexp.internal.REUtil;
-
 import java.util.ArrayList;
 import java.util.List;
 
