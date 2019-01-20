@@ -96,6 +96,11 @@ public class S051_NQueens {
   }
 
 
+  /**
+   * 比较简洁的解法
+   * @param n
+   * @return
+   */
   public List<List<String>> solveNQueens_better(int n) {
     char[][] board = new char[n][n];
     for (int i = 0; i < n; i++)
@@ -131,6 +136,10 @@ public class S051_NQueens {
 
     return true;
   }
+
+
+
+
 
   private List<String> construct(char[][] board) {
     List<String> res = new LinkedList<>();

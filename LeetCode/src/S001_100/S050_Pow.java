@@ -3,7 +3,7 @@ package S001_100;
 /**
  * Create by haifei on 13/1/2019 10:32 PM.
  */
-public class S50_Pow {
+public class S050_Pow {
 
   public double myPow(double x, int n) {
     if (n < 0) {
