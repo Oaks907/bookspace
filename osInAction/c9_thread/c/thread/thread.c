@@ -10,18 +10,18 @@
 #define PG_SIZE 4096
 
 struct task_struct* main_thread;	//主线程PCB
-struct list thread_read_list;		//就绪队列
+struct list thread_ready_list;		//就绪队列
 struct list thread_all_list;		//所有任务队列
 static struct list_elem* thread_tag;	//用于保存队列中的线程结点
 
-extern void switch_to(struct task_truct* cur, struct task_struct* next);
+extern void switch_to(struct task_struct* cur, struct task_struct* next);
 
 /* 获取当前线程pcb指针 */
 struct task_struct* running_thread(){
 	uint32_t esp;
 	asm ("mov %%esp, %0" : "=g" (esp));
 	/* 取esp整数部分即pcb起始地址 */
-	return (struct task_truct*)(esp & 0xfffff000);
+	return (struct task_struct*)(esp & 0xfffff000);
 }
 
 /* 由kernel_thread去执行function(func_arg) */
@@ -52,13 +52,13 @@ void init_thread(struct task_struct* pthread, char* name, int prio) {
    
    if (pthread == main_thread) {
 	/* 由于把main函数也封装成一个线程,并且它一直是运行的,故将其直接设为TASK_RUNNING */
-	pthread_status = TASK_RUNNING;
+	pthread->status = TASK_RUNNING;
     } else {
-	pthread_status = TASK_READY;
+	pthread->status = TASK_READY;
     }
 
    /* self_kstack是线程自己在内核态下使用的栈顶地址 */
-   prhead->self_kstack = (uint32_t*)((uint32_t)pthread + PG_SIZE);
+   pthread->self_kstack = (uint32_t*)((uint32_t)pthread + PG_SIZE);
    pthread->priority = prio;
    pthread->ticks = prio;
    pthread->elapsed_ticks = 0;
@@ -80,7 +80,7 @@ struct task_struct* thread_start(char* name, int prio, thread_func function, voi
    list_append(&thread_ready_list, &thread->general_tag);
    
    /* 确保之前不在队列中 */
-   ASSERT(!elem_find(&thread_all_list, &thread->all_this_tag));
+   ASSERT(!elem_find(&thread_all_list, &thread->all_list_tag));
    /* 加入全部线程队列 */
    list_append(&thread_all_list, &thread->all_list_tag);   
 
@@ -132,5 +132,5 @@ void thread_init(void) {
 	list_init(&thread_all_list);
 	/* 将当前main函数创建为线程 */
 	make_main_thread();
-	put_str("thread_init done\");
+	put_str("thread_init done\n");
 }
