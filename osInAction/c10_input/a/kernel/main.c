@@ -39,6 +39,6 @@ void k_thread_b(void* arg){
 	while(1) {
 		intr_disable();
 		put_str(para);
-		intr_disable();
+		intr_enable();
 	}
 }
