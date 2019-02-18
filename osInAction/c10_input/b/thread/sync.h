@@ -1,7 +1,7 @@
 #ifndef __THREAD_SYNC_H
 #define __THREAD_SYNC_H
 #include "list.h"
-#include "stdin.h"
+#include "stdint.h"
 #include "thread.h"
 
 /* 信号量结构 */

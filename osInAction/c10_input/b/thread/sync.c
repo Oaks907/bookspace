@@ -7,7 +7,7 @@
 /* 初始化信号量 */
 void sema_init(struct semaphore* psema, uint8_t value) {
 	psema->value = value;		//为信号量赋初值
-	list_init(&psma->waiters);	//初始化信号量的等待队列
+	list_init(&psema->waiters);	//初始化信号量的等待队列
 }
 
 /* 初始化锁plock */
@@ -39,7 +39,7 @@ void sema_down(struct semaphore* psema) {
 }
 
 /* 信号量的up操作 */
-void  semp_up(struct semaphore* psema){
+void  sema_up(struct semaphore* psema){
 /* 关中断来保证原子操作 */
 	enum intr_status old_status = intr_disable();
 	ASSERT(psema->value == 0);
@@ -67,8 +67,8 @@ void lock_acquire(struct lock* plock){
 }
 
 /* 释放锁plock */
-void lock_release(){
-	ASSERT(plock->holder == running_thread);
+void lock_release(struct lock* plock){
+	ASSERT(plock->holder == running_thread());
 	if(plock->holder_repeat_nr > 1){
 		plock->holder_repeat_nr--;
 		return;

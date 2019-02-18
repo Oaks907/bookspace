@@ -30,7 +30,7 @@ void console_put_str(char* str){
  /* 终端中输出字符 */
 void console_put_char(uint8_t char_asci){
 	console_acquire();
-	put_str(str);
+	put_char(char_asci);
 	console_release();
 }
 
