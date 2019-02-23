@@ -17,6 +17,6 @@ static void intr_keyboard_handler(void) {
 /* 键盘初始化 */
 void keyboard_init() {
 	put_str("keyboard init start\n");
-	register_hanlder(0x21, intr_keyboard_handler);
+	register_handler(0x21, intr_keyboard_handler);
 	put_str("keyboard init done\n");
 }
