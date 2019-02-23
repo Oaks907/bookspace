@@ -71,11 +71,11 @@ $(BUILD_DIR)/sync.o: thread/sync.c thread/sync.h lib/kernel/list.h kernel/global
 
 $(BUILD_DIR)/keyboard.o: device/keyboard.c device/keyboard.h lib/kernel/print.h \
 	lib/stdint.h kernel/interrupt.h lib/kernel/io.h device/ioqueue.h\
-	thread/thread.h lib/kernel/list.h kernel/global.h thread/sync.h thread/thread.h\
+	thread/thread.h lib/kernel/list.h kernel/global.h thread/sync.h thread/thread.h
 	$(CC) $(CFLAGS) $< -o $@
 
 $(BUILD_DIR)/ioqueue.o: device/ioqueue.c device/ioqueue.h lib/stdint.h thread/thread.h     \
-	lib/kernel/list.h kernel/global.h thread/sync.h thread/thread.h kernel/interrup    t.h \
+	lib/kernel/list.h kernel/global.h thread/sync.h thread/thread.h kernel/interrupt.h \
 	kernel/debug.h
 	$(CC) $(CFLAGS) $< -o $@
 

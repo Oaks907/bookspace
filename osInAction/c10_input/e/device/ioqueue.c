@@ -38,7 +38,7 @@ static void ioq_wait(struct task_truct** waiter){
 static void wakeup(struct task_truck** waiter){
 	ASSERT(*waiter != NULL);
 	thread_unblock(*waiter);
-	*waiter = NULL:
+	*waiter = NULL;
 }
 
 /* 消费者从ioq队列中获取一个字符 */
@@ -55,7 +55,7 @@ char ioq_getchar(struct ioqueue* ioq){
 	}
 
 	char byte = ioq->buf[ioq->tail];
-	ioq->tail = next_pos[ioq->tail];
+	ioq->tail = next_pos(ioq->tail);
 
 	if(ioq->producer != NULL) {
 		wakeup(&ioq->producer);
