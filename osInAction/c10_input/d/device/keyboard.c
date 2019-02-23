@@ -107,7 +107,7 @@ static char keymap[][2] = {
 /* 键盘中断处理程序 */
 static void intr_keyboard_handler(void) {
 	
-	/* 这次中断发生前的上一次中断,以下任意三个键是否有按下 */i
+	/* 这次中断发生前的上一次中断,以下任意三个键是否有按下 */
 	bool ctrl_down_last = ctrl_status;
 	bool shift_down_last = shift_status;
 	bool caps_lock_last = caps_lock_status;
@@ -123,7 +123,7 @@ static void intr_keyboard_handler(void) {
 	}
 	
 	/* 如果上次是以0xe0开头,将扫描码合并 */
-	if(ex_scancode) {
+	if(ext_scancode) {
 		scancode = ((0xe000) | scancode);
 		ext_scancode = false;	//关闭e0标记
 	}	
