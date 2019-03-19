@@ -1,6 +1,7 @@
 package S601_700;
 
-import utils.TreeNode;
+
+import model.TreeNode;
 
 /**
  * Create by haifei on 2/1/2018.

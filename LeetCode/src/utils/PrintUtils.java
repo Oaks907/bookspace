@@ -1,6 +1,10 @@
 package utils;
 
-import javafx.beans.binding.ObjectExpression;
+
+import model.TreeNode;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
 
 /**
  * Create by haifei on 24/1/2018.
@@ -29,17 +33,46 @@ public class PrintUtils {
 
   public static void printArray(int[] nums) {
     for (int i = 0; i < nums.length; i++) {
-        System.out.print(nums[i] + ", ");
+      System.out.print(nums[i] + ", ");
     }
     System.out.println();
   }
 
   public static void printLinkedList(ListNode head) {
-    while (head!= null) {
+    while (head != null) {
       System.out.print(head.val + " ");
       head = head.next;
     }
     System.out.println();
+  }
+
+  public static void printTree(TreeNode node) {
+    if (node == null) {
+      System.out.println("node is null");
+      return;
+    }
+
+    Queue<TreeNode> queue = new ArrayDeque<>();
+    queue.add(node);
+
+    while (!queue.isEmpty()) {
+      int size = queue.size();
+      while (size-- > 0) {
+
+        final TreeNode poll = queue.poll();
+
+        System.out.print(poll.val + " ");
+
+        if (poll.left != null) {
+          queue.add(poll.left);
+        }
+
+        if (poll.right != null) {
+          queue.add(poll.right);
+        }
+      }
+      System.out.println();
+    }
   }
 
   public static void main(String[] args) {

@@ -23,11 +23,11 @@ public class HeapSort {
     for (; getLeftChild(i) < n; i = child) {
       child = getLeftChild(i);
 
-      if (child < n - 1 && array[child] < array[child + 1]) {
+      if (child + 1 < n && array[child] < array[child + 1]) {
         child = child + 1;
       }
 
-      if (array[child] < fatherValue) {
+      if (array[child] <= fatherValue) {
         break;
       } else {
         array[i] = array[child];

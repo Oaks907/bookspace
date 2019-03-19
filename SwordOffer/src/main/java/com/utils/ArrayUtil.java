@@ -19,4 +19,8 @@ public class ArrayUtil {
     arr[left] = arr[right];
     arr[right] = temp;
   }
+
+  public static void main(String[] args) {
+
+  }
 }

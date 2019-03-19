@@ -1,12 +1,8 @@
 package S101_200;
 
-import com.sun.javafx.sg.prism.NGNode;
-import org.w3c.dom.Node;
-import org.w3c.dom.ls.LSException;
+import model.TreeNode;
 import utils.PrintUtils;
-import utils.TreeNode;
 
-import javax.swing.*;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
