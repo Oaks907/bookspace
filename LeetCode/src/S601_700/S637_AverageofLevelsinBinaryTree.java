@@ -10,6 +10,11 @@ import java.util.Queue;
 
 /**
  * Create by haifei on 23/3/2019 6:17 PM.
+ * <p>
+ * https://leetcode.com/problems/average-of-levels-in-binary-tree/
+ * <p>
+ * Given a non-empty binary tree, return the average value of the nodes on each level in the form
+ * of an array.
  */
 public class S637_AverageofLevelsinBinaryTree {
 
