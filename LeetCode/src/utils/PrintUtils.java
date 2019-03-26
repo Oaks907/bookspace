@@ -75,8 +75,38 @@ public class PrintUtils {
     }
   }
 
+  public static TreeNode buildTree(Integer[] nums) {
+    if (nums == null || nums.length == 0) {
+      return null;
+    }
+    TreeNode root = new TreeNode(nums[0]);
+    TreeNode[] nodes = new TreeNode[nums.length];
+    nodes[0] = root;
+
+    for (int i = 1; i < nums.length; i++) {
+      if (nums[i] == null) {
+        continue;
+      }
+
+      TreeNode node = new TreeNode(nums[i]);
+      nodes[i] = node;
+
+      if (i % 2 == 0) {
+        System.out.println(i);
+        nodes[(i - 2) / 2].right = node;
+      } else {
+
+        nodes[(i - 1) / 2].left = node;
+      }
+    }
+
+    return root;
+  }
+
   public static void main(String[] args) {
-    System.out.println(tableSizeFor(8));
+    Integer[] ints = {10, 5, -3, 3, 2, null, 11, 3, -2, null, 1};
+    final TreeNode node = buildTree(ints);
+    printTree(node);
   }
 
   static final int tableSizeFor(int cap) {
