@@ -79,7 +79,10 @@ $(BUILD_DIR)/ioqueue.o: device/ioqueue.c device/ioqueue.h lib/stdint.h thread/th
 	kernel/debug.h
 	$(CC) $(CFLAGS) $< -o $@
 
-
+$(BUILD_DIR)/tss.o: userprog/tss.c userprog/tss.h thread/thread.h lib/stdint.h \
+    	lib/kernel/list.h kernel/global.h lib/string.h lib/stdint.h \
+     	lib/kernel/print.h
+	$(CC) $(CFLAGS) $< -o $@
 
 ##############    汇编代码编译    ###############
 $(BUILD_DIR)/kernel.o: kernel/kernel.S

@@ -35,7 +35,7 @@
 #define TI_LDT	1
 
 #define SELECTOR_K_CODE	((1 << 3) + (TI_GDT << 2) + RPL0)
-#define SELECTOR_K_DATA ((2 << 3) + (TI_GDT << 2) + RPL0))
+#define SELECTOR_K_DATA ((2 << 3) + (TI_GDT << 2) + RPL0)
 #define SELECTOR_K_STACK SELECTOR_K_DATA
 #define SELECTOR_K_GS	((3 <<3) + (TI_GDT << 2) + RPL0)
 /* 第3个段描述符是显存,第4个是tss */
@@ -43,9 +43,9 @@
 #define SELECTOR_U_DATA    ((6 << 3) + (TI_GDT << 2) + RPL3)
 #define SELECTOR_U_STACK   SELECTOR_U_DATA
 
-#define GDT_ATTR_HIGH            ((DESC_G_4K << 7) + (DESC_D_32 << 6) + (DESC_L << 5) + (DESC_AVL <    < 4))
-#define GDT_CODE_ATTR_LOW_DPL3   ((DESC_P << 7) + (DESC_DPL_3 << 5) + (DESC_S_CODE << 4) + DESC_TYP    E_CODE)
- #define GDT_DATA_ATTR_LOW_DPL3   ((DESC_P << 7) + (DESC_DPL_3 << 5) + (DESC_S_DATA << 4) + DESC_TYP    E_DATA)
+#define GDT_ATTR_HIGH            ((DESC_G_4K << 7) + (DESC_D_32 << 6) + (DESC_L << 5) + (DESC_AVL << 4))
+#define GDT_CODE_ATTR_LOW_DPL3   ((DESC_P << 7) + (DESC_DPL_3 << 5) + (DESC_S_CODE << 4) + DESC_TYPE_CODE)
+ #define GDT_DATA_ATTR_LOW_DPL3   ((DESC_P << 7) + (DESC_DPL_3 << 5) + (DESC_S_DATA << 4) + DESC_TYPE_DATA)
 
 
 //---------------  TSS描述符属性  ------------
@@ -62,7 +62,7 @@ struct gdt_desc {
 	uint8_t  attr_low_byte;
 	uint8_t  limit_high_attr_high;
 	uint8_t  base_high_byte;
-}
+};
 
 //--------------   IDT描述符属性  ------------
 #define IDT_DESC_P	1
