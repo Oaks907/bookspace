@@ -1,4 +1,4 @@
-package S1001_S1200;
+package S1001_S1100;
 
 /**
  * Create by haifei on 24/3/2019 10:23 AM.
@@ -6,7 +6,7 @@ package S1001_S1200;
  * https://leetcode.com/problems/smallest-integer-divisible-by-k/
  *
  */
-public class S1022_SmallestIntegerDivisiblebyK {
+public class S1015_SmallestIntegerDivisiblebyK {
 
   public int smallestRepunitDivByK(int K) {
 

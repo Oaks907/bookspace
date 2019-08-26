@@ -1,4 +1,4 @@
-package S1001_S1200;
+package S1001_S1100;
 
 import org.junit.Test;
 
@@ -7,7 +7,7 @@ import org.junit.Test;
  * <p>
  * https://leetcode.com/contest/weekly-contest-129/problems/best-sightseeing-pair/
  */
-public class S1021_BestSightseeingPair {
+public class S1014_BestSightseeingPair {
 
   public int maxScoreSightseeingPair(int[] A) {
 
@@ -30,7 +30,7 @@ public class S1021_BestSightseeingPair {
   public void test() {
     int[] A = {8, 1, 5, 2, 6};
 
-    final S1021_BestSightseeingPair sightseeingPair = new S1021_BestSightseeingPair();
+    final S1014_BestSightseeingPair sightseeingPair = new S1014_BestSightseeingPair();
     System.out.println(sightseeingPair.maxScoreSightseeingPair(A));
   }
 }

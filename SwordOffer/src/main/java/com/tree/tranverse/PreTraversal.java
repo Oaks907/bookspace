@@ -53,6 +53,7 @@ public class PreTraversal {
         node = node.left;
       }
 
+      node = stack.peek();
       //如果其右子树也为空，或者右子树已经访问
       //则可以直接输出当前节点的值
       if (node.right == null || node.right == lastVisit) {
@@ -88,7 +89,11 @@ public class PreTraversal {
     traversal.preTraversal(node1);
 
     System.out.println();
+    System.out.println("中序遍历");
     traversal.middleTraversal(node1);
 
+    System.out.println();
+    System.out.println("后序遍历");
+    traversal.lastTraversal(node1);
   }
 }
