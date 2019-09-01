@@ -1,5 +1,7 @@
 package model;
 
+import lombok.ToString;
+
 /**
  * Create by haifei on 28/11/2018 9:14 AM.
  */
@@ -11,5 +13,10 @@ public class TreeNode {
 
   public TreeNode(int x) {
     val = x;
+  }
+
+  @Override
+  public String toString() {
+    return String.valueOf(val);
   }
 }
