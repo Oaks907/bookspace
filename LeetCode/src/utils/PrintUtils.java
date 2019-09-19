@@ -4,6 +4,7 @@ package utils;
 import model.TreeNode;
 
 import java.util.ArrayDeque;
+import java.util.LinkedList;
 import java.util.Queue;
 
 /**
@@ -61,27 +62,39 @@ public class PrintUtils {
       return;
     }
 
-    Queue<TreeNode> queue = new ArrayDeque<>();
+    Queue<TreeNode> queue = new LinkedList<>();
     queue.add(node);
 
     while (!queue.isEmpty()) {
       int size = queue.size();
+      if(queueNodeAllIsNull(queue)) {
+        break;
+      }
       while (size-- > 0) {
 
         final TreeNode poll = queue.poll();
-
-        System.out.print(poll.val + " ");
-
-        if (poll.left != null) {
-          queue.add(poll.left);
+        if (poll == null) {
+          System.out.print("X ");
+        } else {
+          System.out.print(poll.val + " ");
         }
 
-        if (poll.right != null) {
+        if (poll != null) {
+          queue.add(poll.left);
           queue.add(poll.right);
         }
       }
       System.out.println();
     }
+  }
+
+  private static boolean queueNodeAllIsNull(Queue<TreeNode> queue) {
+    for (TreeNode node : queue) {
+      if(null != node) {
+        return false;
+      }
+    }
+    return true;
   }
 
   public static TreeNode buildTree(Integer[] nums) {
