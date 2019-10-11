@@ -14,6 +14,14 @@ public class PrintUtils {
 
   private static final int MAXIMUM_CAPACITY = 10000;
 
+  public static void printListNode(ListNode node) {
+    while (node != null) {
+      System.out.print(node.val + " -> ");
+      node = node.next;
+    }
+    System.out.println("NULL");
+  }
+
   public static void printArray(int[][] nums) {
     for (int i = 0; i < nums.length; i++) {
       for (int j = 0; j < nums[0].length; j++) {
