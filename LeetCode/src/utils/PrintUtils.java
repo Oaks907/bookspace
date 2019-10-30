@@ -56,6 +56,13 @@ public class PrintUtils {
     System.out.println();
   }
 
+  public static void printArray(String[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+      System.out.print(nums[i] + ", ");
+    }
+    System.out.println();
+  }
+
   public static void printLinkedList(ListNode head) {
     while (head != null) {
       System.out.print(head.val + " ");
