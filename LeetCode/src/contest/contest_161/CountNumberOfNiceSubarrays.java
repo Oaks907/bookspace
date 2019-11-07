@@ -2,7 +2,6 @@ package contest.contest_161;
 
 import org.junit.Assert;
 import org.junit.Test;
-import utils.PrintUtils;
 
 /**
  * Create by haifei on 3/11/2019 10:45 AM.
@@ -18,15 +17,10 @@ public class CountNumberOfNiceSubarrays {
     for (int i = 0; i < nums.length; i++) {
       cur += nums[i] % 2 == 1 ? 1 : 0;
       visited[cur] += 1;
-      PrintUtils.printArray(visited);
       ans += cur >= k ? visited[cur - k] : 0;
     }
 
     return ans;
-  }
-
-  private boolean isOdd(int num) {
-    return num % 2 == 0;
   }
 
   @Test
