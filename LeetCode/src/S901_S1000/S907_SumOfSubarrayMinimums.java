@@ -88,7 +88,7 @@ public class S907_SumOfSubarrayMinimums {
     for (int i = A.length - 1; i >= 0; i--) {
       int count = 1;
 
-      while (!s2.isEmpty() && s2.peek()[0] < A[i]) {
+      while (!s2.isEmpty() && s2.peek()[0] >= A[i]) {
         count += s2.pop()[1];
       }
 
@@ -122,6 +122,11 @@ public class S907_SumOfSubarrayMinimums {
     int[] A = {59, 91};
 
     int result = sumSubarrayMins(A);
+
+    Assert.assertEquals(209, result);
+
+    result = sumSubarrayMins3(A);
+
 
     Assert.assertEquals(209, result);
   }
