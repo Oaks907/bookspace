@@ -1,4 +1,4 @@
-package challenge;
+package challenge.april;
 
 /**
  * Create by haifei on 12/4/2020 9:29 PM.
