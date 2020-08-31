@@ -1,10 +1,7 @@
 package S801_S900;
 
-import model.Node;
 import model.TreeNode;
 import utils.PrintUtils;
-
-import java.util.Stack;
 
 /**
  * https://leetcode.com/problems/binary-tree-pruning/
