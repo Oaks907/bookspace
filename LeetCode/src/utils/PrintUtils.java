@@ -31,6 +31,13 @@ public class PrintUtils {
     }
   }
 
+  public static void printArray(double[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+      System.out.print(nums[i] + ", ");
+    }
+    System.out.println();
+  }
+
   public static void printArray(double[][] nums) {
     for (int i = 0; i < nums.length; i++) {
       for (int j = 0; j < nums[0].length; j++) {
@@ -38,6 +45,13 @@ public class PrintUtils {
       }
       System.out.println();
     }
+  }
+
+  public static void printArray(boolean[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+        System.out.print(nums[i] + ", ");
+    }
+    System.out.println();
   }
 
   public static void printArray(boolean[][] nums) {
@@ -77,6 +91,13 @@ public class PrintUtils {
   }
 
   public static void printArray(int[] nums) {
+    for (int i = 0; i < nums.length; i++) {
+      System.out.print(nums[i] + ", ");
+    }
+    System.out.println();
+  }
+
+  public static void printArray(Integer[] nums) {
     for (int i = 0; i < nums.length; i++) {
       System.out.print(nums[i] + ", ");
     }
