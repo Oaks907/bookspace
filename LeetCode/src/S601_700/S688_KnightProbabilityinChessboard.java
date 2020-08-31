@@ -13,7 +13,7 @@ public class S688_KnightProbabilityinChessboard {
     private int[][] dir = new int[][] {{-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}};
     private double[][][] dp;
 
-    public double knightProbability(int N, int K, int r, int c) {
+    public double knightProbability_dp(int N, int K, int r, int c) {
         dp = new double[N][N][K + 1];
 
         double result = find(N, K, r, c);
@@ -42,11 +42,49 @@ public class S688_KnightProbabilityinChessboard {
         return rate;
     }
 
+    public double knightProbability(int N, int K, int r, int c) {
+
+        int[][] dirs = new int[][] {{-2, -1}, {-1, -2}, {1, -2}, {2, -1}, {2, 1}, {1, 2}, {-1, 2}, {-2, 1}};
+        double result = 0;
+        double[][] count = new double[N][N];
+        count[r][c] = 1;
+
+        for (int step = 0; step < K; step++) {
+            double[][] temp = new double[N][N];
+            for (int row = 0; row < N; row++) {
+                for (int col = 0; col < N; col++) {
+                    for (int[] dir : dirs) {
+                        int x = dir[0] + row;
+                        int y = dir[1] + col;
+
+                        if (x < 0 || x >= N || y < 0 || y >= N) {
+
+                        } else {
+                            temp[x][y] = temp[x][y] + 0.125 * count[row][col];
+                        }
+                    }
+                }
+            }
+//            PrintUtils.printArray(temp);
+            count = temp;
+        }
+
+        for (int row = 0; row < N; row++) {
+            for (int col = 0; col < N; col++) {
+                result += count[row][col];
+            }
+        }
+
+        return result;
+    }
+
     @Test
     public void test() {
 
         double result = knightProbability(3, 2, 0, 0);
 
         System.out.println(result);
+
+        Assert.assertTrue(0.0625 == result);
     }
 }
